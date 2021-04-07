@@ -56,7 +56,7 @@ namespace ASPDotNetShoppingCart.Controllers
                  new Products()
                 {
                     productName = ".NET Analytics",
-                    price = 399,
+                    price = 299,
                     description = "Performs data mining and analytics easily in .NET.",
                     imagePath = "/img/NET_Analytics.png"
                 },
