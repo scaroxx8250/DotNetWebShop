@@ -35,7 +35,7 @@ namespace ASPDotNetShoppingCart.Controllers
                 new Products()
                 {
                     productName = ".NET Charts",
-                    price = 299,
+                    price = 99,
                     description = "Brings powerful charting capabilities to your .NET applications.",
                     imagePath = "/img/NET_Charts.png"
                 },
