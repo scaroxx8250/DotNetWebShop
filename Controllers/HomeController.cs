@@ -34,7 +34,7 @@ namespace ASPDotNetShoppingCart.Controllers
                 new Products()
                 {
                     productName = ".NET Charts",
-                    price = 99,
+                    price = 299,
                     description = "Brings powerful charting capabilities to your .NET applications.",
                     imagePath = "/img/NET_Charts.png"
                 },
@@ -62,7 +62,7 @@ namespace ASPDotNetShoppingCart.Controllers
                 new Products()
                 {
                     productName = ".NET Logger",
-                    price = 169,
+                    price = 49,
                     description = "Logs and aggregates events easily in your .NET apps.",
                     imagePath = "/img/NET_Logger.png"
                 },
