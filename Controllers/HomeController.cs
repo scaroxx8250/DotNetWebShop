@@ -56,14 +56,14 @@ namespace ASPDotNetShoppingCart.Controllers
                  new Products()
                 {
                     productName = ".NET Analytics",
-                    price = 299,
+                    price = 399,
                     description = "Performs data mining and analytics easily in .NET.",
                     imagePath = "/img/NET_Analytics.png"
                 },
                 new Products()
                 {
                     productName = ".NET Logger",
-                    price = 49,
+                    price = 169,
                     description = "Logs and aggregates events easily in your .NET apps.",
                     imagePath = "/img/NET_Logger.png"
                 },
