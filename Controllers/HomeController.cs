@@ -13,6 +13,7 @@ namespace ASPDotNetShoppingCart.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        List<User> users = new List<User>();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -28,6 +29,42 @@ namespace ASPDotNetShoppingCart.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Login(string username, string password)
+        {
+            users.Add(new User { Username = "john", Password = "john" });
+            User user = users.Find(x => x.Username == username && x.Password == password);
+
+            TempData["username"] = username;
+
+            if (user == null)
+            {
+                ViewData["errMsg"] = "No such user or incorrect password.";
+                return View();
+            }
+            else
+            {
+                user.SessionId = Guid.NewGuid().ToString();
+                Response.Cookies.Append("sessionId", user.SessionId);
+                return RedirectToAction("Products");
+            }
+        }
+
+        public IActionResult Logout()
+        {
+            string sessionId = Request.Cookies["sessionId"];
+            User user = users.Find(x => x.SessionId == sessionId);
+            if (user != null)
+            {
+                user.SessionId = null;
+            }
+
+            Response.Cookies.Delete("sessionId");
+
+            return View("Login");
+        }
+
         public IActionResult Products()
         {
             List<Products> products = new List<Products>()
