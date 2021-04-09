@@ -117,6 +117,25 @@ namespace ASPDotNetShoppingCart.Controllers
             //    },
             //};
             ViewData["products"] = appData.Products;
+
+            string sessionId = Request.Cookies["sessionId"];
+
+            if (sessionId != null)
+            {
+                User user = appData.Users.Find(x => x.SessionId == sessionId);
+
+                // If user == null, this means that there is no such user with this valid sessionId
+                // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+                if (user == null)
+                    return RedirectToAction("Index", "Logout");
+
+                // Store sessionId in the ViewData dictionary with a key called "sessionId"
+                ViewData["sessionId"] = sessionId;
+                ViewData["username"] = user.Username;
+
+                //ViewData["cart"] = user.Cart;
+            }
+
             return View();
         }
         public IActionResult Cart()
