@@ -37,6 +37,8 @@ namespace ASPDotNetShoppingCart.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
+            
+
             //users.Add(new User { Username = "john", Password = "john" });
             User user = appData.Users.Find(x => x.Username == username && x.Password == password);
 
