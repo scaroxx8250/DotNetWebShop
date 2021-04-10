@@ -3,6 +3,8 @@
     ViewData["Title"] = "Login";
 }
 
+<script src="/js/login.js"></script>
+
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -22,20 +24,19 @@
 </head>
 
 <body class="text-center">
-    <form class="form-signin verticalalign" action="/Home/Login" method="POST">
-        <img class="mb-4" src="/img/bootstrap-solid.svg" alt="" width="72" height="72">
+    <form class="form-signin verticalalign" id="form" action="/Home/Login" method="POST">
+        <img class="mb-4" src="/img/login_icon.png" alt="" width="60" height="60">
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <label for="inputEmail" class="sr-only">Username</label>
-        <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" value="@ViewData["username"]" required autofocus 
+        <input type="text" id="Username" name="username" class="form-control" placeholder="Username" value="@ViewData["username"]" required 
                oninvalid="this.setCustomValidity('This field cannot be left blank.')" 
                oninput="this.setCustomValidity('')">
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required
+        <input type="password" id="Password" name="password" class="form-control" placeholder="Password" required
                oninvalid="this.setCustomValidity('This field cannot be left blank.')" 
                oninput="this.setCustomValidity('')">
-        <button class="btn btn-lg btn-block btn-outline-success" type="submit">Sign in</button>
-        <p style="color:red">@ViewData["errmsg"]</p>
+        <button class="btn btn-lg btn-block btn-outline-success" type="submit" id="signin">Sign in</button>
+        <p style="color:red" id="err_msg">@ViewData["errmsg"]</p>
     </form>
 </body>
 </html>
-
