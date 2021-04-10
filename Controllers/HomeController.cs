@@ -22,6 +22,7 @@ namespace ASPDotNetShoppingCart.Controllers
         {
             _logger = logger;
             this.appData = appData;
+            appData = new AppData();
         }
 
         public IActionResult Index()
@@ -69,54 +70,17 @@ namespace ASPDotNetShoppingCart.Controllers
             return View("Login");
         }
 
-        public IActionResult Products()
+        public IActionResult Products(string searchString)
         {
-            //List<Product> products = new List<Product>()
-            //{
-            //    new Product()
-            //    {
-            //        productName = ".NET Charts",
-            //        price = 299,
-            //        description = "Brings powerful charting capabilities to your .NET applications.",
-            //        imagePath = "/img/NET_Charts.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET Paypal",
-            //        price = 69,
-            //        description = "Integrate your .NET apps with Paypal the easy way!.",
-            //        imagePath = "/img/NET_PayPal.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET ML",
-            //        price = 299,
-            //        description = "Supercharged .NET machine learning libraries.",
-            //        imagePath = "/img/NET_Machine_Learning.png"
-            //    },
-            //     new Product()
-            //    {
-            //        productName = ".NET Analytics",
-            //        price = 299,
-            //        description = "Performs data mining and analytics easily in .NET.",
-            //        imagePath = "/img/NET_Analytics.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET Logger",
-            //        price = 169,
-            //        description = "Logs and aggregates events easily in your .NET apps.",
-            //        imagePath = "/img/NET_Logger.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET Numerics",
-            //        price = 299,
-            //        description = "Powerful numerical methods for your .NET simulations.",
-            //        imagePath = "/img/NET_Numerics.png"
-            //    },
-            //};
             ViewData["products"] = appData.Products;
+            ViewData["CurrentFilter"] = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                IEnumerable<Product> product = appData.Products.Where(s => s.description.Contains(searchString.ToLower()) || s.description.StartsWith(searchString.ToLower())|| s.productName.Contains(searchString.ToLower()));
+                ViewData["products"] = product.ToList();
+
+            }
 
             string sessionId = Request.Cookies["sessionId"];
 

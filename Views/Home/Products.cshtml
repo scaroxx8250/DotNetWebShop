@@ -84,11 +84,13 @@
         </div>
     </div>
     <br />
-    <form>
-        <div class="form-row">
+    <form asp-action="Products" method="get">
+        <div class="form-actions no-color">
             <div class="col-12" id="input-container">
-                <i class="fa fa-search icon"></i>
-                <input type="text" class="input-text form-control rounded-pill" placeholder="  Enter your search here" />
+                <!--<i class="fa fa-search icon"></i>-->
+                <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-outline-success btn-sm" placeholder="  Enter your search here" />
+                <a asp-action="Products">Show all products</a>
             </div>
         </div>
     </form>
