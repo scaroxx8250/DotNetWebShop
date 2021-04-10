@@ -2,24 +2,32 @@
 @{
     ViewData["Title"] = "Products";
     List<Product> products = (List<Product>)ViewData["products"];
-   
+
+}
+@section Scripts
+    {
+    <script src="~/js/AddToCart.js"></script>
 }
 <style>
-    #input-container{
-        position:relative;
+    #input-container {
+        position: relative;
     }
-    .icon{
-        position:absolute;
-        top:12px;
-        left:15px;
+
+    .icon {
+        position: absolute;
+        top: 12px;
+        left: 15px;
     }
-    .input-text{
-        padding-left:25px;
+
+    .input-text {
+        padding-left: 25px;
     }
-    .carticon{
-       margin-left:250px;
+
+    .carticon {
+        margin-left: 250px;
         float: right;
     }
+
     .badge {
         padding-left: 9px;
         padding-right: 9px;
@@ -38,64 +46,7 @@
         margin-left: -5px;
     }
 </style>
-<script>
-    window.onload = function ()
-    {
-        let elemList = document.getElementsByClassName("addItem");
-        for (let i = 0; i < elemList.length; i++)
-            elemList[i].addEventListener("click", AddItem);
-    }
-    function AddItem(event) {
-        let elem = event.currentTarget;
-        let id = elem.getAttribute('data-prodId');
-        let name = elem.getAttribute('data-name');
-        let price = elem.getAttribute('data-price');
-        let desc = elem.getAttribute('data-desc');
-        let image = elem.getAttribute('data-imagePath');
 
-        SendItem(id, name, price, desc, image);
-    }
-    function SendItem(id, name, price, desc, image)
-    {
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/Home/AddToCart");
-        xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
-        xhr.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE) {
-                // check if HTTP operation is okay
-                if (this.status !== 200)
-                    return;
-
-                let data = JSON.parse(this.responseText);
-
-                // if some error on server, don't update client's view
-                if (!data.success)
-                    return;
-
-                if (data.success) {
-                   
-                    document.getElementById("lblCartCount").innerHTML = data.quantity;
-                }
-
-            
-            }
-
-
-        };
-
-
-        let data = {
-            "productId": id,
-            "productName": name,
-            "price": price,
-            "description": desc,
-            "imagePath": image
-        };
-        // send data to server
-        xhr.send(JSON.stringify(data));
-    }
-
-</script>
 
 
 
@@ -134,11 +85,11 @@
                 </svg>
                 <span class='badge badge-light' id='lblCartCount'> 0 </span>
             </button>
-                @*<button type="button" class="btn btn-success btn-lg carticon my-2 my-sm-0 rounded-pill ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-            </svg><span class='badge badge-light' id='lblCartCount'> 0 </span>
-        </button>*@
+            @*<button type="button" class="btn btn-success btn-lg carticon my-2 my-sm-0 rounded-pill ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </svg><span class='badge badge-light' id='lblCartCount'> 0 </span>
+                </button>*@
         </div>
     </div>
     <br />
@@ -156,26 +107,29 @@
         if (i % 3 == 0)
         {
             @:<div class="card-deck">
-        }
+            }
 
-        <div class="card">
-            <img class="card-img top" src=@products[i].imagePath />
-            <div class="card-body">
-                <h5 class="card-title">@products[i].productName</h5>
-                <p class="card-text">@products[i].description</p>
-                <p class="card-text"> <button type="button" data-prodId="@products[i].ProductId" data-imagePath="@products[i].imagePath" data-name="@products[i].productName"
-                                data-desc="@products[i].description" data-price="@products[i].price" class="btn btn-outline-success btn-block my-2 my-sm-0 rounded-pill addItem">$@products[i].price - Add To Cart</button></p>
-                @*<p class="card-text"><button>$@products[i].price - Add To Cart</button></p>*@
+            <div class="card">
+                <img class="card-img top" src=@products[i].imagePath />
+                <div class="card-body">
+                    <h5 class="card-title">@products[i].productName</h5>
+                    <p class="card-text">@products[i].description</p>
+                    <p class="card-text">
+                        <button type="button" data-prodId="@products[i].ProductId" data-imagePath="@products[i].imagePath" data-name="@products[i].productName"
+                                data-desc="@products[i].description" data-price="@products[i].price" class="btn btn-outline-success btn-block my-2 my-sm-0 rounded-pill addItem">
+                            $@products[i].price - Add To Cart
+                        </button>
+                    </p>
+                </div>
             </div>
-        </div>
 
-        if ((i + 1) % 3 == 0)
-        {
+            if ((i + 1) % 3 == 0)
+            {
             @:</div><br />
         }
     }
 </div>
 
 
-  
+
 
