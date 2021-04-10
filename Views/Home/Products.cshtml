@@ -85,12 +85,13 @@
     </div>
     <br />
     <form asp-action="Products" method="get">
-        <div class="form-actions no-color">
+        <div class="form-actions no-color form-row">
             <div class="col-12" id="input-container">
-                <!--<i class="fa fa-search icon"></i>-->
-                <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-outline-success btn-sm" placeholder="  Enter your search here" />
-                <a asp-action="Products">Show all products</a>
+                <i class="fa fa-search icon"></i>
+                <input type="text" name="SearchString" value="@ViewData["currentFilter"]" class="input-text form-control rounded-pill" placeholder="  Enter your search here"/>
+                <!--<input type="text" value="Search" class="input-text form-control rounded-pill" placeholder="  Enter your search here" />-->
+                <!--<input type="submit" value="Search" class="btn btn-outline-success btn-sm" placeholder="  Enter your search here" />-->
+                <!--<a asp-action="Products">Show all products</a>-->
             </div>
         </div>
     </form>
@@ -99,7 +100,7 @@
     {
         if (i % 3 == 0)
         {
-            @:<div class="card-deck">
+            @:<div class="card-columns">
         }
 
         <div class="card">

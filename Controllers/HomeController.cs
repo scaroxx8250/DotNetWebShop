@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Controllers
@@ -75,12 +76,20 @@ namespace ASPDotNetShoppingCart.Controllers
             ViewData["products"] = appData.Products;
             ViewData["CurrentFilter"] = searchString;
 
+            var prod = from product in appData.Products select product;
             if (!String.IsNullOrEmpty(searchString))
             {
-                IEnumerable<Product> product = appData.Products.Where(s => s.description.Contains(searchString.ToLower()) || s.description.StartsWith(searchString.ToLower())|| s.productName.Contains(searchString.ToLower()));
-                ViewData["products"] = product.ToList();
+                prod = prod.Where(prod => prod.description.Contains(searchString.ToLower()) || prod.productName.Contains(searchString.ToLower()));
+                ViewData["products"] = prod.ToList();
 
             }
+
+            //if (!String.IsNullOrEmpty(searchString))
+            //{
+            //    IEnumerable<Product> product = appData.Products.Where(s => s.description.Contains(searchString.ToLower()) || s.description.StartsWith(searchString.ToLower()) || s.productName.Contains(searchString.ToLower()));
+            //    ViewData["products"] = product.ToList();
+
+            //}
 
             string sessionId = Request.Cookies["sessionId"];
 
