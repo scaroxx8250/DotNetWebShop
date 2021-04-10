@@ -55,19 +55,21 @@ namespace ASPDotNetShoppingCart.Util
             foreach (string line in lines)
             {
                 string[] quartet = line.Split(";");
-                if (quartet.Length != 4)
+                if (quartet.Length != 5)
                     continue; // not what we expected; skip
 
                 Product item = new Product()
                 {
-                    productName = quartet[0],
-                    price = Convert.ToDouble(quartet[1]),
-                    description = quartet[2],
-                    imagePath = quartet[3]
+                    ProductId = Convert.ToInt32(quartet[0]),
+                    productName = quartet[1],
+                    price = Convert.ToDouble(quartet[2]),
+                    description = quartet[3],
+                    imagePath = quartet[4]
                 };
 
                 products.Add(item);
             }
         }
+
     }
 }

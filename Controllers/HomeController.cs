@@ -118,6 +118,11 @@ namespace ASPDotNetShoppingCart.Controllers
             //};
             ViewData["products"] = appData.Products;
 
+            List<Product> li = appData.Products;
+
+   
+
+
             string sessionId = Request.Cookies["sessionId"];
 
             if (sessionId != null)
@@ -132,8 +137,7 @@ namespace ASPDotNetShoppingCart.Controllers
                 // Store sessionId in the ViewData dictionary with a key called "sessionId"
                 ViewData["sessionId"] = sessionId;
                 ViewData["username"] = user.Username;
-
-                //ViewData["cart"] = user.Cart;
+                ViewData["cart"] = user.Usercart;
             }
 
             return View();
@@ -151,6 +155,50 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View();
         }
+        [HttpPost]
+        public IActionResult AddToCart([FromBody]Product product)
+        {
+            int countItems = 0;
+
+            string sessionId = Request.Cookies["sessionId"];
+
+            User user = appData.Users.Find(x => x.SessionId == sessionId);
+            if (user == null)
+                return Json(new { success = false });   // error; no session
+            else
+            {
+                selectedProducts sp = new selectedProducts();
+                sp.Products.ProductId = product.ProductId;
+                sp.Products.productName = product.productName;
+                sp.Products.price = product.price;
+                sp.Products.description = product.description;
+                sp.Products.imagePath = product.imagePath;
+                sp.Qty = 1;
+
+                if (user.Usercart == null)
+                {
+                    user.Usercart.Products.Add(sp);
+                    countItems++;
+                 }
+                else
+                {
+                    foreach(var item in user.Usercart.Products)
+                    {
+                        if(item.Products.ProductId == sp.Products.ProductId)
+                        {
+                            item.Qty++;
+                           
+                        }
+                        countItems += item.Qty;
+                    }
+                    user.Usercart.Products.Add(sp);
+                }
+                return Json(new { success = true, quantity=countItems });
+
+
+            }
+        }
+
 
 
         public IActionResult Privacy()
