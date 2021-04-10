@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Models
 {
-    public class Products
+    public class Product
     {
         public string productName { get; set; }
         public double price { get; set; }

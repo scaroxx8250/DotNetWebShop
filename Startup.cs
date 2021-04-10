@@ -1,3 +1,4 @@
+using ASPDotNetShoppingCart.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +25,11 @@ namespace ASPDotNetShoppingCart
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            // inject our users and photos into DI container
+            services.AddSingleton(_ => {
+                return Helper.InitAppData();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
