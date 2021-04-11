@@ -1,24 +1,33 @@
-﻿
 @{
     ViewData["Title"] = "Products";
     List<Product> products = (List<Product>)ViewData["products"];
+    Cart Usercart = (Cart)ViewData["cart"];
+    int countItem = 0;
+}
+@section Scripts
+    {
+    <script src="~/js/AddToCart.js"></script>
 }
 <style>
-    #input-container{
-        position:relative;
+    #input-container {
+        position: relative;
     }
-    .icon{
-        position:absolute;
-        top:12px;
-        left:15px;
+
+    .icon {
+        position: absolute;
+        top: 12px;
+        left: 15px;
     }
-    .input-text{
-        padding-left:25px;
+
+    .input-text {
+        padding-left: 25px;
     }
-    .carticon{
-       margin-left:250px;
+
+    .carticon {
+        margin-left: 250px;
         float: right;
     }
+
     .badge {
         padding-left: 9px;
         padding-right: 9px;
@@ -47,7 +56,7 @@
             <ul class="nav">
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
-                        Hello @if(ViewData["sessionId"] is null)
+                        Hello @if (ViewData["sessionId"] is null)
                         {
                             @:Guest
                             ViewData["link"] = "/Home/Login";
@@ -61,9 +70,12 @@
                         }
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/Purchases"><u>My Purchases</u></a>
-                </li>
+                @if(ViewData["sessionId"] != null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Purchases"><u>My Purchases</u></a>
+                    </li>
+                }
                 <li class="nav-item">
                     <a class="nav-link" href=@ViewData["link"]><u>@ViewData["linkName"]</u></a>
                 </li>
@@ -74,13 +86,25 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-cart" viewBox="0 0 16 16">
                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                 </svg>
-                <span class='badge badge-light' id='lblCartCount'> 5 </span>
+
+                @if (Usercart == null)
+                {
+                    countItem = 0;
+                }
+                else if (Usercart.Products.Count != 0)
+                {
+                    foreach (var p in Usercart.Products)
+                    {
+                        countItem += p.Qty;
+                    }
+                }
+                <span class='badge badge-light' id='lblCartCount'> @countItem </span>
             </button>
-                @*<button type="button" class="btn btn-success btn-lg carticon my-2 my-sm-0 rounded-pill ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-            </svg><span class='badge badge-light' id='lblCartCount'> 0 </span>
-        </button>*@
+            @*<button type="button" class="btn btn-success btn-lg carticon my-2 my-sm-0 rounded-pill ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </svg><span class='badge badge-light' id='lblCartCount'> 0 </span>
+                </button>*@
         </div>
     </div>
     <br />
@@ -103,23 +127,27 @@
             @:<div class="card-columns">
         }
 
-        <div class="card">
-            <img class="card-img top" src=@products[i].imagePath />
-            <div class="card-body">
-                <h5 class="card-title">@products[i].productName</h5>
-                <p class="card-text">@products[i].description</p>
-                <p class="card-text"> <button type="button" class="btn btn-outline-success btn-block my-2 my-sm-0 rounded-pill">$@products[i].price - Add To Cart</button></p>
-                @*<p class="card-text"><button>$@products[i].price - Add To Cart</button></p>*@
+            <div class="card">
+                <img class="card-img top" src=@products[i].imagePath />
+                <div class="card-body">
+                    <h5 class="card-title">@products[i].productName</h5>
+                    <p class="card-text">@products[i].description</p>
+                    <p class="card-text">
+                        <button type="button" data-Id="@products[i].ProductId" data-imagePath="@products[i].imagePath" data-name="@products[i].productName"
+                                data-desc="@products[i].description" data-price="@products[i].price" class="btn btn-outline-success btn-block my-2 my-sm-0 rounded-pill addItem">
+                            $@products[i].price - Add To Cart
+                        </button>
+                    </p>
+                </div>
             </div>
-        </div>
 
-        if ((i + 1) % 3 == 0)
-        {
+            if ((i + 1) % 3 == 0)
+            {
             @:</div><br />
         }
     }
 </div>
 
 
-  
+
 
