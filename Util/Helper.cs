@@ -20,6 +20,7 @@ namespace ASPDotNetShoppingCart.Util
             AppData appData = new AppData();
 
             // Fill up data by calling the methods "AddUsers" and "AddProducts"
+          
             AddUsers(appData.Users);
             AddProducts(appData.Products, "ProductDetails.data");
 
@@ -44,6 +45,9 @@ namespace ASPDotNetShoppingCart.Util
                 users.Add(user);
             }
         }
+     
+
+
 
         public static void AddProducts(List<Product> products, string filename)
         {
