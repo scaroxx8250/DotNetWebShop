@@ -160,55 +160,93 @@ namespace ASPDotNetShoppingCart.Controllers
 
         public IActionResult AddToCart([FromBody] Product product)
         {
-            int countItems = 0;
+           
 
+            //get the sessionid
             string sessionId = Request.Cookies["sessionId"];
 
+            //get the user object
             User user = appData.Users.Find(x => x.SessionId == sessionId);
             if (user == null)
                 return Json(new { success = false });   // error; no session
             else
             {
+                //initialize selectedProducts object
                 selectedProducts sp = new selectedProducts();
-                Product p = new Product();
-                p.ProductId = product.ProductId;
-                p.productName = product.productName;
-                p.price = product.price;
-                p.description = product.description;
-                p.imagePath = product.imagePath;
 
-                sp.Products = p;
+              
+                //Product p = new Product();
+                //p.ProductId = product.ProductId;
+                //p.productName = product.productName;
+                //p.price = product.price;
+                //p.description = product.description;
+                //p.imagePath = product.imagePath;
+
+                //pass the request product to sp object 
+                sp.Products = product;
                 sp.Qty = 1;
 
+                //set countItems to be Qty that user has clicked on the button.
+                int countItems = sp.Qty;
+
+                //if the cart is empty, add the product and countItem.
                 if (user.Usercart.Products.Count == 0)
                 {
                     user.Usercart.Products.Add(sp);
-                    countItems++;
                 }
                 else
                 {
-                    int nomatch = 0;
+                    //get the total items of the cart
+                    foreach( var item in user.Usercart.Products)
+                    {
+                        countItems += item.Qty;
+                    }
+
+                    bool match = false;
+                    //loop thru the products
                     foreach (var item in user.Usercart.Products)
                     {
+                        //add quantity if the product matches
                         if (item.Products.ProductId == sp.Products.ProductId)
                         {
-                            
                             item.Qty++;
-                            countItems += item.Qty;
+                            match = true;
+                            break;
+                        }
+                   
 
-                        }
-                        else
-                        {
-                            nomatch++;
-                            countItems += item.Qty;
-                        }
-                       
                     }
-                    if (nomatch == countItems)
+                    //add new products if not match
+                    if (match == false)
                     {
                         user.Usercart.Products.Add(sp);
-                        countItems++;
                     }
+
+
+
+
+                    //int nomatch = 0;
+                    //foreach (var item in user.Usercart.Products)
+                    //{
+                    //    if (item.Products.ProductId == sp.Products.ProductId)
+                    //    {
+
+                    //        item.Qty++;
+                    //        countItems += item.Qty;
+
+                    //    }
+                    //    else
+                    //    {
+                    //        nomatch++;
+                    //        countItems += item.Qty;
+                    //    }
+
+                    //}
+                    //if (nomatch == countItems)
+                    //{
+                    //    user.Usercart.Products.Add(sp);
+                    //    countItems++;
+                    //}
 
                 }
                 return Json(new { success = true, quantity = countItems });
