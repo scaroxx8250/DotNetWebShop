@@ -71,56 +71,8 @@ namespace ASPDotNetShoppingCart.Controllers
 
         public IActionResult Products()
         {
-            //List<Product> products = new List<Product>()
-            //{
-            //    new Product()
-            //    {
-            //        productName = ".NET Charts",
-            //        price = 299,
-            //        description = "Brings powerful charting capabilities to your .NET applications.",
-            //        imagePath = "/img/NET_Charts.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET Paypal",
-            //        price = 69,
-            //        description = "Integrate your .NET apps with Paypal the easy way!.",
-            //        imagePath = "/img/NET_PayPal.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET ML",
-            //        price = 299,
-            //        description = "Supercharged .NET machine learning libraries.",
-            //        imagePath = "/img/NET_Machine_Learning.png"
-            //    },
-            //     new Product()
-            //    {
-            //        productName = ".NET Analytics",
-            //        price = 299,
-            //        description = "Performs data mining and analytics easily in .NET.",
-            //        imagePath = "/img/NET_Analytics.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET Logger",
-            //        price = 169,
-            //        description = "Logs and aggregates events easily in your .NET apps.",
-            //        imagePath = "/img/NET_Logger.png"
-            //    },
-            //    new Product()
-            //    {
-            //        productName = ".NET Numerics",
-            //        price = 299,
-            //        description = "Powerful numerical methods for your .NET simulations.",
-            //        imagePath = "/img/NET_Numerics.png"
-            //    },
-            //};
+         
             ViewData["products"] = appData.Products;
-
-
-
-
 
             string sessionId = Request.Cookies["sessionId"];
 
@@ -157,6 +109,8 @@ namespace ASPDotNetShoppingCart.Controllers
         }
         public IActionResult Cart()
         {
+            string sessionId = Request.Cookies["sessionId"];
+
             return View();
         }
         public IActionResult Purchases()
