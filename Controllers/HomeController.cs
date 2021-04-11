@@ -79,29 +79,25 @@ namespace ASPDotNetShoppingCart.Controllers
             var prod = from product in appData.Products select product;
             if (!String.IsNullOrEmpty(searchString))
             {
+                //create new list for filtered products 
                 List<Product> filterPrd = new List<Product>();
 
+                //for each product in appData.Products
                 foreach (var p in prod)
                 {
+                    //if description or product name contains searched string
                     if(p.description.ToLower().Contains (searchString.ToLower()) || p.productName.ToLower().Contains(searchString.ToLower()))
                     {
+                        //add product to list of filtered products 
                         filterPrd.Add(p);
                     }
                 }
 
-
-                //prod = prod.Where(prod => prod.description.Contains(searchString.ToLower()) || prod.productName.Contains(searchString.ToLower()));
                 ViewData["products"] = filterPrd;
 
 
             }
 
-            //if (!String.IsNullOrEmpty(searchString))
-            //{
-            //    IEnumerable<Product> product = appData.Products.Where(s => s.description.Contains(searchString.ToLower()) || s.description.StartsWith(searchString.ToLower()) || s.productName.Contains(searchString.ToLower()));
-            //    ViewData["products"] = product.ToList();
-
-            //}
 
             string sessionId = Request.Cookies["sessionId"];
 
