@@ -22,6 +22,7 @@
         text-indent: 15px;
         color: #333;
         font-family: 'Microsoft YaHei';
+        
     }
 
     .cart-table {
@@ -33,16 +34,24 @@
         color: #333333;
     }
 
+    
         .cart-table th {
             border-bottom: 2px solid #B2D1FF;
-            font-weight: normal;
+            font-weight: bold;
             height: 35px;
             line-height: 1.4375rem;
             text-align: center;
         }
-        
+
         .cart-table .cart-th-left {
-            text-align: left;
+            text-align: center;
+            padding-left: 17px;
+            font-weight: bold;
+        }
+
+        .cart-item .cart-txt-left {
+            text-align: center;
+            padding-left: 17px;
         }
 
     .cart-item {
@@ -55,9 +64,7 @@
             text-align: center;
         }
 
-        .cart-item .cart-txt-left {
-            text-align: left;
-        }
+        
 
         .cart-name {
             color: #3366D4;
@@ -68,9 +75,7 @@
         .cart-subtotal {
             color: #FF3334;
             font-weight: bold;
-            
         }
-
 
     .cart-reduce, .cart-add {
         display: inline-block;
@@ -121,12 +126,17 @@
             top: 1px;
         }
 
-    .cart-total-price {
-        color: #FF3334;
-        font-weight: bold;
-        font-size: 16px;
+    .cart-bottom-span {
+        font-size: 14px;
+        padding: 0px 18px;
+        margin: 0 30px;
     }
 
+    .cart-total-price {
+        font-size: 14px;
+        color: #FF3334;
+        font-weight: bold;
+    }
     .cart-bottom-btn {
         color: #FFF;
         font-size: 14px;
@@ -168,10 +178,10 @@
 
         <div class="cart-title">View Cart</div>
         <table class="cart-table">
-            <tr>
+            <tr class="cart-header">
                 <th>Product</th>
-                <th class="cart-th-left">Product Name</th>
-                <th class="cart-th-left">Product Description</th>
+                <th class="cart-name">Product Name</th>
+                <th class="cart-des">Product Description</th>
                 <th width="120">Price</th>
                 <th width="100">Quantity</th>
                 <th width="120">Subtotal</th>
@@ -194,6 +204,7 @@
                 <td colspan="6">
                     <span class="cart-bottom-span">Total：<span class="cart-total-price">0</span></span>
                 </td>
+               
             </tr>
             <tr class="cart-bottom">
                 <td colspan="6">

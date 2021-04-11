@@ -190,7 +190,7 @@ namespace ASPDotNetShoppingCart.Controllers
             "Brings powerful charting capabilities to your .NET applications.",
             "Supercharged .NET machine learning libraries."};
 
-            string[] Quantity = { "3", "3", "3" };
+            string[] Quantity = { "1", "2", "3" };
 
             string[] ActivationCode = { "1", "2", "3" };
 
