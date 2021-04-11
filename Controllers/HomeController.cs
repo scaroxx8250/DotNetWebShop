@@ -154,35 +154,35 @@ namespace ASPDotNetShoppingCart.Controllers
             ViewData["Description"] = description;
             ViewData["Price"] = price;
 
-            //ViewData["products"] = appData.Products;
 
             string sessionId = Request.Cookies["sessionId"];
 
-            // No sessionId
-            if (sessionId == null)
+            if (sessionId != null)
             {
-                return RedirectToAction("Login", "Home");
-            }
-            else
-            {
-                // Search for matching sessionId
                 User user = appData.Users.Find(x => x.SessionId == sessionId);
 
                 // If user == null, this means that there is no such user with this valid sessionId
                 // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
                 if (user == null)
-                {
-                    return RedirectToAction("Logout", "Home");
-                }
-                else
-                {
-                    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                    ViewData["sessionId"] = sessionId;
-                    ViewData["username"] = user.Username;
 
-                    //ViewData["cart"] = user.Cart;
-                }
+                    return RedirectToAction("Logout", "Home");
+
+                // Store sessionId in the ViewData dictionary with a key called "sessionId"
+                ViewData["sessionId"] = sessionId;
+                ViewData["username"] = user.Username;
+                ViewData["cart"] = user.Usercart;
             }
+            else
+            {
+                sessionId = Request.Cookies["GSessionId"];
+
+                Guest guest = appData.Guests.Find(x => x.GsessionId == sessionId);
+
+                ViewData["GSessionId"] = guest.GsessionId;
+
+                ViewData["Guestcart"] = guest.Usercart;
+            }
+
             return View();
         }
         public IActionResult Purchases()

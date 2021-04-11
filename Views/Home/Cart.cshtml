@@ -1,9 +1,20 @@
 ﻿@{ ViewData["Title"] = "Cart";
 
-    string[] images = (string[])ViewData["images"];
-    string[] Names = (string[])ViewData["Names"];
-    string[] Descriptions = (string[])ViewData["Description"];
-    string[] Price = (string[])ViewData["Price"]; }
+    string GSessionId = "";
+    Cart Usercart = new Cart();
+    if (ViewData["GSessionId"] != null)
+    {
+        GSessionId = (string)ViewData["GSessionId"];
+        Usercart = (Cart)ViewData["Guestcart"];
+    }
+    else
+    {
+        Usercart = (Cart)ViewData["cart"];
+    }
+
+}
+
+
 
 <style type="text/css">
     .cart {
@@ -160,13 +171,29 @@
         <div class="col">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Hello Guest</a>
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
+                        Hello @if (ViewData["sessionId"] is null)
+                        {
+                            @:Guest
+                            ViewData["link"] = "/Home/Login";
+                            ViewData["linkName"] = "Login";
+                        }
+                        else
+                        {
+                            @ViewData["username"]
+                            ViewData["link"] = "/Home/Logout";
+                            ViewData["linkName"] = "Logout";
+                        }
+                    </a>
                 </li>
+                @if (ViewData["sessionId"] != null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Purchases"><u>My Purchases</u></a>
+                    </li>
+                }
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><u>My Purchases</u></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><u>Logout</u></a>
+                    <a class="nav-link" href=@ViewData["link"]><u>@ViewData["linkName"]</u></a>
                 </li>
             </ul>
         </div>
@@ -186,18 +213,24 @@
                 <th width="120">Subtotal</th>
                 <th width="80">Delete</th>
             </tr>
-            @for (int i = 0; i < images.Length; i++)
+
+            @if (Usercart != null)
             {
-                @:<tr class="cart-item">
-                    @:<td><img src=@images[i] width="125" height="66" /></td>
-                    @:<td class="cart-txt-left"><span class="cart-name">@Names[i]</span></td>
-                    @:<td class="cart-txt-left"><span class="cart-description">@Descriptions[i]</span></td>
-                    @:<td><span class="cart-price">@Price[i]</span></td>
-                    @:<td><span class="cart-reduce">-</span><span class="cart-num">0</span> <span class="cart-add">+</span> </td>
-                    @:<td><span class="cart-subtotal">0</span></td>
-                    @:<td><span class="cart-del">Delete</span></td>
-                @:</tr>
+                @for (int i = 0; i < Usercart.Products.Count(); i++)
+                {
+                    @:<tr class="cart-item">
+                        @:<td><img src=@Usercart.Products[i].Products.imagePath width="125" height="66" /></td>
+                        @:<td class="cart-txt-left"><span class="cart-name">@Usercart.Products[i].Products.productName</span></td>
+                        @:<td class="cart-txt-left"><span class="cart-description">@Usercart.Products[i].Products.description</span></td>
+                        @:<td><span class="cart-price">@Usercart.Products[i].Products.price</span></td>
+                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@Usercart.Products[i].Qty</span> <span class="cart-add">+</span> </td>
+                        @:<td><span class="cart-subtotal">0</span></td>
+                        @:<td><span class="cart-del">Delete</span></td>
+                    @:</tr>
+                }
             }
+
+
 
             <tr class="cart-bottom">
                 <td colspan="6">
