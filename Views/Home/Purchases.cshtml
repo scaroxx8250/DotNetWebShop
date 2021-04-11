@@ -1,10 +1,120 @@
 ﻿
-@{
-    ViewData["Title"] = "Purchases";
+@{ ViewData["Title"] = "Gallery Page";
+
+    string[] images = (string[])ViewData["images"];
+    string[] Names = (string[])ViewData["Names"];
+    string[] Descriptions = (string[])ViewData["Description"];
+    string[] Quantity = (string[])ViewData["Quantity"];
+    string[] ActivationCode = (string[])ViewData["AcCode"];
 }
 
-<h1>Purchases</h1>
+<style type="text/css">
+    .cart {
+        width: 1000px;
+        padding: 0 10px 10px;
+        border: 10px solid #D5E5F5;
+    }
 
-<body>
-    @TempData["username"]
-</body>
+    .cart-title {
+        margin-bottom: 10px;
+        font-size: 20px;
+        border-bottom: 1px solid #AED2FF;
+        line-height: 30px;
+        height: 30 px;
+        font-weight: 700;
+        text-indent: 15px;
+        color: #333;
+        font-family: 'Microsoft YaHei';
+    }
+
+    .trade-detail {
+        margin-bottom: 10px;
+        font-size: 15px;
+        border-bottom: 1px solid #AED2FF;
+        line-height: 30px;
+        height: 30 px;
+        font-weight: 700;
+        color: #333;
+        font-family: 'Calibri';
+    }
+
+    .cart-table {
+        width: 100%;
+        margin: 50 auto;
+        border-color: collapse;
+        font-size: 12px;
+        font-family: Verdana,"Microsoft YaHei";
+        color: #333333;
+    }
+</style>
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Hello Guest</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><u>Home</u></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><u>Logout</u></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br />
+
+    <div class="MyPurchase">
+
+        <div class="cart-title">My Purchase</div>
+        <table class="cart-table">
+            @for (int i = 0; i < images.Length; i++)
+            {
+                @:<tr>
+                    <td>
+
+                        <div class="card" style="width: 18rem;">
+
+                            <img class="card-img-top" src="@images[i]" alt="Card image cap">
+
+                            <div class="card-body">
+
+                                <h5 class="card-title">@Names[i]</h5>
+
+                                <p class="card-text">@Descriptions[i]</p>
+
+                                <a href="#" class="btn btn-primary">Download</a>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td class=" trade-detail">
+                        Purchased On: 10/4/2020 <br> Quantity: @Quantity[i]
+                        <br><div class="dropdown">
+                            Activation Code:
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Activation Code
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                @for (int j = 0; j < ActivationCode.Length; j++)
+                                {
+                            <a class="dropdown-item" href="#">@ActivationCode[j]</a>}
+
+                            </div>
+
+                        </div>
+                    </td>
+
+
+                @:</tr>
+            }
+
+
+
+        </table>
+    </div>
