@@ -5,7 +5,7 @@
 }
 function AddItem(event) {
     let elem = event.currentTarget;
-    let id = elem.getAttribute('data-prodId');
+    let id = elem.getAttribute('data-Id');
     let name = elem.getAttribute('data-name');
     let price = elem.getAttribute('data-price');
     let desc = elem.getAttribute('data-desc');
@@ -35,17 +35,17 @@ function SendItem(id, name, price, desc, image) {
     };
 
 
+    id = id * 1;
+    price = price * 1;
 
-
-
-
-    let data = {
-        "ProductId": id,
-        "ProductName": name,
-        "Price": price,
-        "description": desc,
-        "imagePath": image
-    };
+        data = {
+            "ProductId": id,
+            "ProductName": name,
+            "Price": price,
+            "description": desc,
+            "imagePath": image
+        };
+  
     // send data to server
     xhr.send(JSON.stringify(data));
 }

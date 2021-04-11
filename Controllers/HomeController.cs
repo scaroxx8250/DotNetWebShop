@@ -155,55 +155,56 @@ namespace ASPDotNetShoppingCart.Controllers
             return View();
         }
 
-        public IActionResult AddToCart([FromBody] string ProductId)
+
+
+
+        public IActionResult AddToCart([FromBody] Product product)
         {
-            string countITem = ProductId;
-            return Json(new { success = false });
+            int countItems = 0;
+
+            string sessionId = Request.Cookies["sessionId"];
+
+            User user = appData.Users.Find(x => x.SessionId == sessionId);
+            if (user == null)
+                return Json(new { success = false });   // error; no session
+            else
+            {
+                selectedProducts sp = new selectedProducts();
+                Product p = new Product();
+                
+
+              p.ProductId = product.ProductId;
+                p.productName = product.productName;
+                p.price = product.price;
+                p.description = product.description;
+                p.imagePath = product.imagePath;
+
+                sp.Products = p;
+                sp.Qty = 1;
+
+                if (user.Usercart.Products.Count == 0)
+                {
+                    user.Usercart.Products.Add(sp);
+                    countItems++;
+                }
+                else
+                {
+                    foreach (var item in user.Usercart.Products)
+                    {
+                        if (item.Products.ProductId == sp.Products.ProductId)
+                        {
+                            item.Qty++;
+
+                        }
+                        countItems += item.Qty;
+                    }
+                    user.Usercart.Products.Add(sp);
+                }
+                return Json(new { success = true, quantity = countItems });
+
+
+            }
         }
-
-
-        //public IActionResult AddToCart([FromBody] Product product)
-        //{
-        //    int countItems = 0;
-
-        //    string sessionId = Request.Cookies["sessionId"];
-
-        //    User user = appData.Users.Find(x => x.SessionId == sessionId);
-        //    if (user == null)
-        //        return Json(new { success = false });   // error; no session
-        //    else
-        //    {
-        //        selectedProducts sp = new selectedProducts();
-        //        sp.Products.ProductId = product.ProductId;
-        //        sp.Products.productName = product.productName;
-        //        sp.Products.price = product.price;
-        //        sp.Products.description = product.description;
-        //        sp.Products.imagePath = product.imagePath;
-        //        sp.Qty = 1;
-
-        //        if (user.Usercart == null)
-        //        {
-        //            user.Usercart.Products.Add(sp);
-        //            countItems++;
-        //         }
-        //        else
-        //        {
-        //            foreach(var item in user.Usercart.Products)
-        //            {
-        //                if(item.Products.ProductId == sp.Products.ProductId)
-        //                {
-        //                    item.Qty++;
-                           
-        //                }
-        //                countItems += item.Qty;
-        //            }
-        //            user.Usercart.Products.Add(sp);
-        //        }
-        //        return Json(new { success = true, quantity=countItems });
-
-
-        //    }
-        //}
 
 
 
