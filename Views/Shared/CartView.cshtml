@@ -1,4 +1,11 @@
-﻿<style type="text/css">
+﻿@{ ViewData["Title"] = "Gallery Page";
+
+    string[] images = (string[])ViewData["images"];
+    string[] Names = (string[])ViewData["Names"];
+    string[] Descriptions = (string[])ViewData["Description"];
+    string[] Price = (string[])ViewData["Price"]; }
+
+<style type="text/css">
     .cart {
         width: 1000px;
         padding: 0 10px 10px;
@@ -31,6 +38,7 @@
             font-weight: normal;
             height: 35px;
             line-height: 1.4375rem;
+            text-align: center;
         }
 
     .cart-item {
@@ -40,7 +48,7 @@
 
         .cart-item td {
             height: 55px;
-            text-align: center;
+            text-align: left;
         }
 
         .cart-item .cart-txt-left {
@@ -118,14 +126,14 @@
         font-weight: 600px;
         cursor: pointer;
         margin: 0 20px;
-        background: #FE8502;
-        border: 1px solid #FF6633;
+        background: #28a745;
+        border: 1px solid #28a745;
         border-radius: 5px 5px 5px 5px;
         padding: 6px 12px;
     }
 
         .cart-bottom-btn:hover {
-            background: #FF6600;
+            background: #28a745;
         }
 </style>
 
@@ -151,10 +159,10 @@
 
     <div class="cart">
 
-        <div class="cart-title">Chart View</div>
+        <div class="cart-title">View Cart</div>
         <table class="cart-table">
             <tr>
-                <th width="60"><span class="cart-all">Product</span></th>
+                <th>Product</th>
                 <th>Product Name</th>
                 <th>Product Description</th>
                 <th width="120">Price</th>
