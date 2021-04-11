@@ -171,9 +171,7 @@ namespace ASPDotNetShoppingCart.Controllers
             {
                 selectedProducts sp = new selectedProducts();
                 Product p = new Product();
-                
-
-              p.ProductId = product.ProductId;
+                p.ProductId = product.ProductId;
                 p.productName = product.productName;
                 p.price = product.price;
                 p.description = product.description;
@@ -189,16 +187,29 @@ namespace ASPDotNetShoppingCart.Controllers
                 }
                 else
                 {
+                    int nomatch = 0;
                     foreach (var item in user.Usercart.Products)
                     {
                         if (item.Products.ProductId == sp.Products.ProductId)
                         {
+                            
                             item.Qty++;
+                            countItems += item.Qty;
 
                         }
-                        countItems += item.Qty;
+                        else
+                        {
+                            nomatch++;
+                            countItems += item.Qty;
+                        }
+                       
                     }
-                    user.Usercart.Products.Add(sp);
+                    if (nomatch == countItems)
+                    {
+                        user.Usercart.Products.Add(sp);
+                        countItems++;
+                    }
+
                 }
                 return Json(new { success = true, quantity = countItems });
 
