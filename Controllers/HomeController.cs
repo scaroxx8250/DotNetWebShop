@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Controllers
@@ -22,6 +23,7 @@ namespace ASPDotNetShoppingCart.Controllers
         {
             _logger = logger;
             this.appData = appData;
+            appData = new AppData();
         }
 
         public IActionResult Index()
@@ -69,9 +71,33 @@ namespace ASPDotNetShoppingCart.Controllers
             return View("Login");
         }
 
-        public IActionResult Products()
+        public IActionResult Products(string searchString)
         {
             ViewData["products"] = appData.Products;
+            ViewData["CurrentFilter"] = searchString;
+
+            var prod = from product in appData.Products select product;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //create new list for filtered products 
+                List<Product> filterPrd = new List<Product>();
+
+                //for each product in appData.Products
+                foreach (var p in prod)
+                {
+                    //if description or product name contains searched string
+                    if(p.description.ToLower().Contains (searchString.ToLower()) || p.productName.ToLower().Contains(searchString.ToLower()))
+                    {
+                        //add product to list of filtered products 
+                        filterPrd.Add(p);
+                    }
+                }
+
+                ViewData["products"] = filterPrd;
+
+
+            }
+
 
             string sessionId = Request.Cookies["sessionId"];
 
