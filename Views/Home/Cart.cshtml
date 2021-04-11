@@ -40,6 +40,10 @@
             line-height: 1.4375rem;
             text-align: center;
         }
+        
+        .cart-table .cart-th-left {
+            text-align: left;
+        }
 
     .cart-item {
         background-color: #FAFCFF;
@@ -48,22 +52,25 @@
 
         .cart-item td {
             height: 55px;
-            text-align: left;
+            text-align: center;
         }
 
         .cart-item .cart-txt-left {
             text-align: left;
         }
 
-    .cart-name {
-        color: #3366D4;
-        font-weight: bold;
-    }
+        .cart-name {
+            color: #3366D4;
+            font-weight: bold;
+            
+        }
 
-    .cart-subtotal {
-        color: #FF3334;
-        font-weight: bold;
-    }
+        .cart-subtotal {
+            color: #FF3334;
+            font-weight: bold;
+            
+        }
+
 
     .cart-reduce, .cart-add {
         display: inline-block;
@@ -163,8 +170,8 @@
         <table class="cart-table">
             <tr>
                 <th>Product</th>
-                <th>Product Name</th>
-                <th>Product Description</th>
+                <th class="cart-th-left">Product Name</th>
+                <th class="cart-th-left">Product Description</th>
                 <th width="120">Price</th>
                 <th width="100">Quantity</th>
                 <th width="120">Subtotal</th>
@@ -172,21 +179,24 @@
             </tr>
             @for (int i = 0; i < images.Length; i++)
             {
-                @:<tr class="cart-item">
-                    @:<td><img src=@images[i] width="125" height="66" /></td>
-                    @:<td class="cart-txt-left"><span class="cart-name">@Names[i]</span></td>
-                    @:<td><span class="cart-description">@Descriptions[i]</span></td>
-                    @:<td><span class="cart-price">@Price[i]</span></td>
-                    @:<td><span class="cart-reduce">-</span><span class="cart-num">0</span> <span class="cart-add">+</span> </td>
-                    @:<td><span class="cart-subtotal">0</span></td>
-                    @:<td><span class="cart-del">Delete</span></td>
-                @:</tr>
-            }
+        @:<tr class="cart-item">
+            @:<td><img src=@images[i] width="125" height="66" /></td>
+            @:<td class="cart-txt-left"><span class="cart-name">@Names[i]</span></td>
+            @:<td class="cart-txt-left"><span class="cart-description">@Descriptions[i]</span></td>
+            @:<td><span class="cart-price">@Price[i]</span></td>
+            @:<td><span class="cart-reduce">-</span><span class="cart-num">0</span> <span class="cart-add">+</span> </td>
+            @:<td><span class="cart-subtotal">0</span></td>
+            @:<td><span class="cart-del">Delete</span></td>
+        @:</tr>
+    }
 
             <tr class="cart-bottom">
                 <td colspan="6">
-                    <span class="cart-bottom-span">Selected<span class="cart-total-num">0</span>product</span>
                     <span class="cart-bottom-span">Total：<span class="cart-total-price">0</span></span>
+                </td>
+            </tr>
+            <tr class="cart-bottom">
+                <td colspan="6">
                     <span class="cart-bottom-btn">Continue Shopping</span>
                     <span class="cart-bottom-btn">Check out</span>
                 </td>
