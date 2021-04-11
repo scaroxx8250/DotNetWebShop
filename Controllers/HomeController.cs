@@ -79,8 +79,20 @@ namespace ASPDotNetShoppingCart.Controllers
             var prod = from product in appData.Products select product;
             if (!String.IsNullOrEmpty(searchString))
             {
-                prod = prod.Where(prod => prod.description.Contains(searchString.ToLower()) || prod.productName.Contains(searchString.ToLower()));
-                ViewData["products"] = prod.ToList();
+                List<Product> filterPrd = new List<Product>();
+
+                foreach (var p in prod)
+                {
+                    if(p.description.ToLower().Contains (searchString.ToLower()) || p.productName.ToLower().Contains(searchString.ToLower()))
+                    {
+                        filterPrd.Add(p);
+                    }
+                }
+
+
+                //prod = prod.Where(prod => prod.description.Contains(searchString.ToLower()) || prod.productName.Contains(searchString.ToLower()));
+                ViewData["products"] = filterPrd;
+
 
             }
 
