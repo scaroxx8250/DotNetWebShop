@@ -5,16 +5,12 @@ using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Models
 {
-    public class User
+    public class Guest
     {
-        public string UserId { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string SessionId { get; set; }
-
+        public string GsessionId { get; set; }
         public Cart Usercart { get; set; }
 
-        public User()
+        public Guest()
         {
             Usercart = new Cart();
 

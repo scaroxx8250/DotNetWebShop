@@ -82,17 +82,26 @@ namespace ASPDotNetShoppingCart.Controllers
                 // If user == null, this means that there is no such user with this valid sessionId
                 // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
                 if (user == null)
-                {
-                    return RedirectToAction("Logout", "Home");
-                }
-                else
-                {
-                    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                    ViewData["sessionId"] = sessionId;
-                    ViewData["username"] = user.Username;
 
-                    //ViewData["cart"] = user.Cart;
-                }
+                    return RedirectToAction("Logout", "Home");
+
+                // Store sessionId in the ViewData dictionary with a key called "sessionId"
+                ViewData["sessionId"] = sessionId;
+                ViewData["username"] = user.Username;
+                ViewData["cart"] = user.Usercart;
+            }
+            else
+            {
+                Guest guest = new Guest()
+                {
+                    GsessionId = Guid.NewGuid().ToString()
+                };
+
+                 appData.Guests.Add(guest);
+
+                Response.Cookies.Append("GsessionId", guest.GsessionId);
+
+                ViewData["GSessionId"] = guest.GsessionId;
             }
 
             return View();
@@ -128,7 +137,6 @@ namespace ASPDotNetShoppingCart.Controllers
                     //ViewData["cart"] = user.Cart;
                 }
             }
-
             return View();
         }
         public IActionResult Purchases()
@@ -165,6 +173,122 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View();
         }
+
+
+        public IActionResult AddToCart([FromBody] Product product)
+        {
+            //initialize selectedProducts object
+            SelectedProducts sp = new SelectedProducts();
+
+            //get the sessionid
+            string sessionId = Request.Cookies["sessionId"];
+
+            if(sessionId != null)
+            {
+                //get the user object
+                User user = appData.Users.Find(x => x.SessionId == sessionId);
+                if (user == null)
+                    return Json(new { success = false });   // error; no session
+
+                else
+                {
+                    //pass the request product to sp object 
+                    sp.Products = product;
+                    sp.Qty = 1;
+
+                    //set countItems to be Qty that user has clicked on the button.
+                    int countItems = sp.Qty;
+
+                    //if the cart is empty, add the product and countItem.
+                    if (user.Usercart.Products.Count == 0)
+                    {
+                        user.Usercart.Products.Add(sp);
+                    }
+                    else
+                    {
+                        //get the total items of the cart
+                        foreach (var item in user.Usercart.Products)
+                        {
+                            countItems += item.Qty;
+                        }
+
+                        bool match = false;
+                        //loop thru the products
+                        foreach (var item in user.Usercart.Products)
+                        {
+                            //add quantity if the product matches
+                            if (item.Products.ProductId == sp.Products.ProductId)
+                            {
+                                item.Qty++;
+                                match = true;
+                                break;
+                            }
+                        }
+                        //add new products if not match
+                        if (match == false)
+                        {
+                            user.Usercart.Products.Add(sp);
+                        }
+
+                    }
+                    return Json(new { success = true, quantity = countItems });
+
+
+                }
+            }
+            else
+            {
+                //store GsessionId into sessionId variable;
+                sessionId = Request.Cookies["GsessionId"];
+
+                //get the guest object
+                Guest guest = appData.Guests.Find(x => x.GsessionId == sessionId);
+
+                //pass the request product to sp object 
+                sp.Products = product;
+                sp.Qty = 1;
+
+                //set countItems to be Qty that user has clicked on the button.
+                int countItems = sp.Qty;
+
+                //if the cart is empty, add the product and countItem.
+                if (guest.Usercart.Products.Count == 0)
+                {
+                    guest.Usercart.Products.Add(sp);
+                }
+                else
+                {
+                    //get the total items of the cart
+                    foreach (var item in guest.Usercart.Products)
+                    {
+                        countItems += item.Qty;
+                    }
+
+                    bool match = false;
+                    //loop thru the products
+                    foreach (var item in guest.Usercart.Products)
+                    {
+                        //add quantity if the product matches
+                        if (item.Products.ProductId == sp.Products.ProductId)
+                        {
+                            item.Qty++;
+                            match = true;
+                            break;
+                        }
+                    }
+                    //add new products if not match
+                    if (match == false)
+                    {
+                        guest.Usercart.Products.Add(sp);
+                    }
+
+                }
+                return Json(new { success = true, quantity = countItems });
+            }
+            
+           
+        }
+
 
 
         public IActionResult Privacy()
