@@ -71,9 +71,12 @@
                         }
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/Purchases"><u>My Purchases</u></a>
-                </li>
+                @if(ViewData["sessionId"] != null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Purchases"><u>My Purchases</u></a>
+                    </li>
+                }
                 <li class="nav-item">
                     <a class="nav-link" href=@ViewData["link"]><u>@ViewData["linkName"]</u></a>
                 </li>
