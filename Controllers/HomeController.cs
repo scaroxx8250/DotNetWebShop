@@ -134,6 +134,26 @@ namespace ASPDotNetShoppingCart.Controllers
         }
         public IActionResult Cart()
         {
+            //mock
+            string[] imgs = { "/img/NET_Analytics.png",
+            "/img/NET_Charts.png",
+            "/img/NET_Machine_Learning.png"};
+
+            string[] product = { "NET_Analytics",
+            "NET_Charts",
+            "NET_Machine_Learning"};
+
+            string[] description = { "Performs data mining and analytics easily in .NET.",
+            "Brings powerful charting capabilities to your .NET applications.",
+            "Supercharged .NET machine learning libraries."};
+
+            string[] price = { "399", "99", "299" };
+
+            ViewData["images"] = imgs;
+            ViewData["Names"] = product;
+            ViewData["Description"] = description;
+            ViewData["Price"] = price;
+
             //ViewData["products"] = appData.Products;
 
             string sessionId = Request.Cookies["sessionId"];
