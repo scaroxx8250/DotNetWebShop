@@ -174,14 +174,6 @@ namespace ASPDotNetShoppingCart.Controllers
                 //initialize selectedProducts object
                 selectedProducts sp = new selectedProducts();
 
-              
-                //Product p = new Product();
-                //p.ProductId = product.ProductId;
-                //p.productName = product.productName;
-                //p.price = product.price;
-                //p.description = product.description;
-                //p.imagePath = product.imagePath;
-
                 //pass the request product to sp object 
                 sp.Products = product;
                 sp.Qty = 1;
