@@ -175,7 +175,7 @@ namespace ASPDotNetShoppingCart.Controllers
         public IActionResult AddToCart([FromBody] Product product)
         {
             //initialize selectedProducts object
-            selectedProducts sp = new selectedProducts();
+            SelectedProducts sp = new SelectedProducts();
 
             //get the sessionid
             string sessionId = Request.Cookies["sessionId"];

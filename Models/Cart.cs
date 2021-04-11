@@ -10,13 +10,8 @@ namespace ASPDotNetShoppingCart.Models
       
         public Cart()
         {
-            Products = new List<selectedProducts>();
+            Products = new List<SelectedProducts>();
         }
-        public List<selectedProducts> Products { get; set; }
-    }
-    public class selectedProducts
-    {
-        public Product Products { get; set; }
-        public int Qty { get; set; }
+        public List<SelectedProducts> Products { get; set; }
     }
 }
