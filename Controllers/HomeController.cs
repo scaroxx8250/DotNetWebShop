@@ -138,10 +138,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View();
         }
-        public IActionResult Cart()
-        {
-            return View();
-        }
+
         public IActionResult Purchases()
         {
             //if (TempData["username"] is null)
@@ -162,6 +159,31 @@ namespace ASPDotNetShoppingCart.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Cart()
+        {
+            string[] imgs = { "/img/NET_Analytics.png",
+            "/img/NET_Charts.png",
+            "/img/NET_Machine_Learning.png"};
+
+            string[] product = { "NET_Analytics",
+            "NET_Charts",
+            "NET_Machine_Learning"};
+
+            string[] description = { "Performs data mining and analytics easily in .NET.",
+            "Brings powerful charting capabilities to your .NET applications.",
+            "Supercharged .NET machine learning libraries."};
+
+            string[] price = { "399", "99", "299" };
+
+            ViewData["images"] = imgs;
+            ViewData["Names"] = product;
+            ViewData["Description"] = description;
+            ViewData["Price"] = price;
+
+            return View();
+
         }
     }
 }

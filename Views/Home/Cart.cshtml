@@ -1,7 +1,197 @@
-﻿
-@{
-    ViewData["Title"] = "Cart";
-}
+﻿@{ ViewData["Title"] = "Gallery Page";
 
-<h1>Cart</h1>
+    string[] images = (string[])ViewData["images"];
+    string[] Names = (string[])ViewData["Names"];
+    string[] Descriptions = (string[])ViewData["Description"];
+    string[] Price = (string[])ViewData["Price"]; }
+
+<style type="text/css">
+    .cart {
+        width: 1000px;
+        padding: 0 10px 10px;
+        border: 10px solid #D5E5F5;
+    }
+
+    .cart-title {
+        margin-bottom: 10px;
+        font-size: 14px;
+        border-bottom: 1px solid #AED2FF;
+        line-height: 30px;
+        height: 30 px;
+        font-weight: 700;
+        text-indent: 15px;
+        color: #333;
+        font-family: 'Microsoft YaHei';
+    }
+
+    .cart-table {
+        width: 100%;
+        margin: 0 auto;
+        border-color: collapse;
+        font-size: 12px;
+        font-family: Verdana,"Microsoft YaHei";
+        color: #333333;
+    }
+
+        .cart-table th {
+            border-bottom: 2px solid #B2D1FF;
+            font-weight: normal;
+            height: 35px;
+            line-height: 1.4375rem;
+            text-align: center;
+        }
+
+    .cart-item {
+        background-color: #FAFCFF;
+        border-bottom: 1px dotted #84B3FD;
+    }
+
+        .cart-item td {
+            height: 55px;
+            text-align: left;
+        }
+
+        .cart-item .cart-txt-left {
+            text-align: left;
+        }
+
+    .cart-name {
+        color: #3366D4;
+        font-weight: bold;
+    }
+
+    .cart-subtotal {
+        color: #FF3334;
+        font-weight: bold;
+    }
+
+    .cart-reduce, .cart-add {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        color: #FFF;
+        background-color: #BDBDBD;
+        border: 0;
+        cursor: pointer;
+        border-radius: 2px;
+        font-family: 'Arial';
+        font-size: 0.833331rem;
+    }
+
+        .cart-raduce:hover, .cart-add:hover {
+            background-color: #FF9900;
+        }
+
+    .cart-num {
+        margin: 5px;
+        width: 35px;
+        text-align: center;
+        height: 20px;
+        line-height: 20px;
+        padding: 0 3px;
+        display: inline-block;
+        background: #fff;
+        border: 1px solid #bbb;
+    }
+
+    .cart-del, .cart-all {
+        color: #3366D4;
+    }
+
+        .cart-del:hover, .cart-all:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+    .cart-bottom {
+        height: 55px;
+        text-align: right;
+    }
+
+        .cart-bottom .cart-all {
+            position: relative;
+            top: 1px;
+        }
+
+    .cart-total-price {
+        color: #FF3334;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .cart-bottom-btn {
+        color: #FFF;
+        font-size: 14px;
+        font-weight: 600px;
+        cursor: pointer;
+        margin: 0 20px;
+        background: #28a745;
+        border: 1px solid #28a745;
+        border-radius: 5px 5px 5px 5px;
+        padding: 6px 12px;
+    }
+
+        .cart-bottom-btn:hover {
+            background: #28a745;
+        }
+</style>
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Hello Guest</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><u>My Purchases</u></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><u>Logout</u></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br />
+
+    <div class="cart">
+
+        <div class="cart-title">View Cart</div>
+        <table class="cart-table">
+            <tr>
+                <th>Product</th>
+                <th>Product Name</th>
+                <th>Product Description</th>
+                <th width="120">Price</th>
+                <th width="100">Quantity</th>
+                <th width="120">Subtotal</th>
+                <th width="80">Delete</th>
+            </tr>
+            @for (int i = 0; i < images.Length; i++)
+            {
+                @:<tr class="cart-item">
+                    @:<td><img src=@images[i] width="125" height="66" /></td>
+                    @:<td class="cart-txt-left"><span class="cart-name">@Names[i]</span></td>
+                    @:<td><span class="cart-description">@Descriptions[i]</span></td>
+                    @:<td><span class="cart-price">@Price[i]</span></td>
+                    @:<td><span class="cart-reduce">-</span><span class="cart-num">0</span> <span class="cart-add">+</span> </td>
+                    @:<td><span class="cart-subtotal">0</span></td>
+                    @:<td><span class="cart-del">Delete</span></td>
+                @:</tr>
+            }
+
+            <tr class="cart-bottom">
+                <td colspan="6">
+                    <span class="cart-bottom-span">Selected<span class="cart-total-num">0</span>product</span>
+                    <span class="cart-bottom-span">Total：<span class="cart-total-price">0</span></span>
+                    <span class="cart-bottom-btn">Continue Shopping</span>
+                    <span class="cart-bottom-btn">Check out</span>
+                </td>
+            </tr>
+
+        </table>
+    </div>
 
