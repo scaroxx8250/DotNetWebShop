@@ -15,7 +15,7 @@ namespace ASPDotNetShoppingCart.Controllers
     public class HomeController : Controller
     {
         private readonly DbWebShop db;
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
 
 
         public HomeController(DbWebShop db)
@@ -80,64 +80,66 @@ namespace ASPDotNetShoppingCart.Controllers
 
         public IActionResult Products(string searchString)
         {
-            //ViewData["products"] = appData.Products;
-            //ViewData["CurrentFilter"] = searchString;
+            List<Product> products = db.Products.ToList();
 
-            //var prod = from product in appData.Products select product;
-            //if (!String.IsNullOrEmpty(searchString))
-            //{
-            //    //create new list for filtered products 
-            //    List<Product> filterPrd = new List<Product>();
+            ViewData["products"] = products;
+            ViewData["CurrentFilter"] = searchString;
 
-            //    //for each product in appData.Products
-            //    foreach (var p in prod)
-            //    {
-            //        //if Description or product name contains searched string
-            //        if(p.Description.ToLower().Contains (searchString.ToLower()) || p.ProductName.ToLower().Contains(searchString.ToLower()))
-            //        {
-            //            //add product to list of filtered products 
-            //            filterPrd.Add(p);
-            //        }
-            //    }
+           
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //create new list for filtered products 
+                List<Product> filterPrd = new List<Product>();
 
-            //    ViewData["products"] = filterPrd;
+                //for each product in appData.Products
+                foreach (var p in products)
+                {
+                    //if Description or product name contains searched string
+                    if (p.Description.ToLower().Contains(searchString.ToLower()) || p.ProductName.ToLower().Contains(searchString.ToLower()))
+                    {
+                        //add product to list of filtered products 
+                        filterPrd.Add(p);
+                    }
+                }
+
+                ViewData["products"] = filterPrd;
 
 
-            //}
+               }
 
 
-            //string sessionId = Request.Cookies["sessionId"];
+                //string sessionId = Request.Cookies["sessionId"];
 
-            //if (sessionId != null)
-            //{
-            //    User user = appData.Users.Find(x => x.SessionId == sessionId);
+                //if (sessionId != null)
+                //{
+                //    User user = appData.Users.Find(x => x.SessionId == sessionId);
 
-            //    // If user == null, this means that there is no such user with this valid sessionId
-            //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
-            //    if (user == null)
+                //    // If user == null, this means that there is no such user with this valid sessionId
+                //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+                //    if (user == null)
 
-            //        return RedirectToAction("Logout", "Home");
+                //        return RedirectToAction("Logout", "Home");
 
-            //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-            //    ViewData["sessionId"] = sessionId;
-            //    ViewData["username"] = user.Username;
-            //    //ViewData["cart"] = user.Usercart;
-            //}
-            //else
-            //{
-            //    Guest guest = new Guest()
-            //    {
-            //        GsessionId = Guid.NewGuid().ToString()
-            //    };
+                //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
+                //    ViewData["sessionId"] = sessionId;
+                //    ViewData["username"] = user.Username;
+                //    //ViewData["cart"] = user.Usercart;
+                //}
+                //else
+                //{
+                //    Guest guest = new Guest()
+                //    {
+                //        GsessionId = Guid.NewGuid().ToString()
+                //    };
 
-            //     appData.Guests.Add(guest);
+                //     appData.Guests.Add(guest);
 
-            //    Response.Cookies.Append("GsessionId", guest.GsessionId);
+                //    Response.Cookies.Append("GsessionId", guest.GsessionId);
 
-            //    ViewData["GSessionId"] = guest.GsessionId;
-            //}
+                //    ViewData["GSessionId"] = guest.GsessionId;
+                //}
 
-            return View();
+                return View();
         }
         public IActionResult Cart()
         {
