@@ -134,39 +134,83 @@ namespace ASPDotNetShoppingCart.Controllers
         }
         public IActionResult Cart()
         {
-            //ViewData["products"] = appData.Products;
+            //mock
+            string[] imgs = { "/img/NET_Analytics.png",
+            "/img/NET_Charts.png",
+            "/img/NET_Machine_Learning.png"};
+
+            string[] product = { "NET_Analytics",
+            "NET_Charts",
+            "NET_Machine_Learning"};
+
+            string[] description = { "Performs data mining and analytics easily in .NET.",
+            "Brings powerful charting capabilities to your .NET applications.",
+            "Supercharged .NET machine learning libraries."};
+
+            string[] price = { "399", "99", "299" };
+
+            ViewData["images"] = imgs;
+            ViewData["Names"] = product;
+            ViewData["Description"] = description;
+            ViewData["Price"] = price;
+
 
             string sessionId = Request.Cookies["sessionId"];
 
-            // No sessionId
-            if (sessionId == null)
+            if (sessionId != null)
             {
-                return RedirectToAction("Login", "Home");
-            }
-            else
-            {
-                // Search for matching sessionId
                 User user = appData.Users.Find(x => x.SessionId == sessionId);
 
                 // If user == null, this means that there is no such user with this valid sessionId
                 // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
                 if (user == null)
-                {
-                    return RedirectToAction("Logout", "Home");
-                }
-                else
-                {
-                    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                    ViewData["sessionId"] = sessionId;
-                    ViewData["username"] = user.Username;
 
-                    //ViewData["cart"] = user.Cart;
-                }
+                    return RedirectToAction("Logout", "Home");
+
+                // Store sessionId in the ViewData dictionary with a key called "sessionId"
+                ViewData["sessionId"] = sessionId;
+                ViewData["username"] = user.Username;
+                ViewData["cart"] = user.Usercart;
             }
+            else
+            {
+                sessionId = Request.Cookies["GSessionId"];
+
+                Guest guest = appData.Guests.Find(x => x.GsessionId == sessionId);
+
+                ViewData["GSessionId"] = guest.GsessionId;
+
+                ViewData["Guestcart"] = guest.Usercart;
+            }
+
             return View();
         }
         public IActionResult Purchases()
         {
+            string[] imgs = { "/img/NET_Analytics.png",
+            "/img/NET_Charts.png",
+            "/img/NET_Machine_Learning.png"};
+
+            string[] product = { "NET_Analytics",
+            "NET_Charts",
+            "NET_Machine_Learning"};
+
+            string[] description = { "Performs data mining and analytics easily in .NET.",
+            "Brings powerful charting capabilities to your .NET applications.",
+            "Supercharged .NET machine learning libraries."};
+
+            string[] Quantity = { "3", "3", "3" };
+
+            string[] ActivationCode = { "1", "2", "3" };
+
+
+
+            ViewData["images"] = imgs;
+            ViewData["Names"] = product;
+            ViewData["Description"] = description;
+            ViewData["Quantity"] = Quantity;
+            ViewData["AcCode"] = ActivationCode;
+
             //ViewData["products"] = appData.Products;
 
             string sessionId = Request.Cookies["sessionId"];
@@ -195,6 +239,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
                     //ViewData["cart"] = user.Cart;
                 }
+
             }
 
             return View();
