@@ -20,6 +20,11 @@ namespace ASPDotNetShoppingCart.Db
             //set Name column in Product table as unique
             model.Entity<Product>().HasIndex(x => x.ProductName).IsUnique();
 
+            model.Ignore<Cart>();
+            model.Ignore<Guest>();
+
+
+            model.Entity<User>().Ignore(c => c.Usercart);
           
         }
         public DbSet<User> Users { get; set; }

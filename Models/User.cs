@@ -16,18 +16,18 @@ namespace ASPDotNetShoppingCart.Models
         [Required]
         [MaxLength(32)]
         public string Password { get; set; }
-        [Required]
+        
         [MaxLength(36)]
         public string SessionId { get; set; }
 
         public virtual PurchaseHistory PurchaseHistory { get; set; }
 
-        //public Cart Usercart { get; set; }
+        public Cart Usercart { get; set; }
 
-        //public User()
-        //{
-        //    Usercart = new Cart();
+        public User()
+        {
+            Usercart = new Cart();
 
-        //}
+        }
     }
 }

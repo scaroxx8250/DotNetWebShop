@@ -43,7 +43,6 @@ namespace ASPDotNetShoppingCart.Util
                 {
                     Username = names[i],
                     Password = pwd[i],
-                    SessionId = Guid.NewGuid().ToString()
                 }) ;
             }
 

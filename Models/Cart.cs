@@ -7,7 +7,6 @@ namespace ASPDotNetShoppingCart.Models
 {
     public class Cart
     {
-      
         public Cart()
         {
             Products = new List<SelectedProducts>();
