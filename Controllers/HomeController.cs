@@ -220,7 +220,12 @@ namespace ASPDotNetShoppingCart.Controllers
             return View();
         }
 
+        public IActionResult Purchases()
+        {
+            Cart cart = new Cart();
 
+            return View();
+        }
 
         public IActionResult AddToCart([FromBody] Product product)
         {
@@ -249,7 +254,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -284,7 +289,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -314,7 +319,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -349,7 +354,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
