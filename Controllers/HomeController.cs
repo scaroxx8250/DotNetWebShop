@@ -360,6 +360,7 @@ namespace ASPDotNetShoppingCart.Controllers
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
+                ViewData["UserId"] = users.Id;
             }
 
             // for guest users who directly use url to access purchases, redirect to login page.
@@ -384,6 +385,19 @@ namespace ASPDotNetShoppingCart.Controllers
             // clear user cart on checkout.
             db.Carts.Remove(cart);
             db.SaveChanges();
+
+            // extract and save purchased items into viewdata for view retrieval
+            List<PurchasedHistory> Histories = db.PurchasedHistories.Where(history => history.UserId == users.Id).ToList<PurchasedHistory>();
+            List<int> HistoryIds = new List<int>();
+            foreach ( PurchasedHistory history in Histories)
+            {
+                HistoryIds.Add(history.Id);
+            }
+            List<PurchasedItems> AllItems = db.PurchasedItems.Where(item => HistoryIds.Contains(item.PurchasedHistoryId)).ToList<PurchasedItems>();
+            ViewData["PurchasedItems"] = AllItems;
+
+            List<Product> products = db.Products.ToList();
+            ViewData["products"] = products;
             return View();
         }
 
