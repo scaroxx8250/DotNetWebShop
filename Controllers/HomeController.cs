@@ -268,67 +268,68 @@ namespace ASPDotNetShoppingCart.Controllers
         public IActionResult AddToCart([FromBody] Product product)
             
         {
-            int countItems = 0;
-            //initialize selectedProducts object
-            SelectedProducts sp = new SelectedProducts();
+            return View();
+            //int countItems = 0;
+            ////initialize selectedProducts object
+            //SelectedProducts sp = new SelectedProducts();
 
-            //get the sessionid
-            string sessionId = Request.Cookies["sessionId"];
+            ////get the sessionid
+            //string sessionId = Request.Cookies["sessionId"];
 
-            if (sessionId != null)
-            {
-                //get the user object
-                User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
-                if (user == null)
-                    return Json(new { success = false });   // error; no session
+            //if (sessionId != null)
+            //{
+            //    //get the user object
+            //    User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
+            //    if (user == null)
+            //        return Json(new { success = false });   // error; no session
 
-                else
-                {
-                    //pass the request product to sp object 
-                    sp.Products = product;
-                    sp.Qty = 1;
+            //    else
+            //    {
+            //        //pass the request product to sp object 
+            //        sp.Products = product;
+            //        sp.Qty = 1;
 
-                    //set countItems to be Qty that user has clicked on the button.
-                    countItems = sp.Qty;
+            //        //set countItems to be Qty that user has clicked on the button.
+            //        countItems = sp.Qty;
 
-                    //if the cart is empty, add the product and countItem.
-                    if (user.Usercart.Products.Count == 0)
-                    {
-                        user.Usercart.Products.Add(sp);
-                    }
-                    else
-                    {
-                        //get the total items of the cart
-                        foreach (var item in user.Usercart.Products)
-                        {
-                            countItems += item.Qty;
-                        }
+            //        //if the cart is empty, add the product and countItem.
+            //        if (user.Usercart.Products.Count == 0)
+            //        {
+            //            user.Usercart.Products.Add(sp);
+            //        }
+            //        else
+            //        {
+            //            //get the total items of the cart
+            //            foreach (var item in user.Usercart.Products)
+            //            {
+            //                countItems += item.Qty;
+            //            }
 
-                        bool match = false;
-                        //loop thru the products
-                        foreach (var item in user.Usercart.Products)
-                        {
-                            //add quantity if the product matches
-                            if (item.Products.Id == sp.Products.Id)
-                            {
-                                item.Qty++;
-                                match = true;
-                                break;
-                            }
-                        }
-                        //add new products if not match
-                        if (match == false)
-                        {
-                            user.Usercart.Products.Add(sp);
-                        }
+            //            bool match = false;
+            //            //loop thru the products
+            //            foreach (var item in user.Usercart.Products)
+            //            {
+            //                //add quantity if the product matches
+            //                if (item.Products.Id == sp.Products.Id)
+            //                {
+            //                    item.Qty++;
+            //                    match = true;
+            //                    break;
+            //                }
+            //            }
+            //            //add new products if not match
+            //            if (match == false)
+            //            {
+            //                user.Usercart.Products.Add(sp);
+            //            }
 
-                    }
-                    return Json(new { success = true, quantity = countItems });
+            //        }
+            //        return Json(new { success = true, quantity = countItems });
 
 
-                }
-            }
-            return Json(new { success = false });   // error; no session
+            //    }
+            //}
+            //return Json(new { success = false });   // error; no session
             //else
             //{
             //    //store GsessionId into sessionId variable;
