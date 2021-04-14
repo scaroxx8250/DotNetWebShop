@@ -29,57 +29,6 @@ namespace ASPDotNetShoppingCart.Util
             AddUsers();
             AddProducts("ProductDetails.data");
             // AddProducts(appData.Products, "ProductDetails.data");
-            Guest g = new Guest
-            {
-                GsessionId = "abc"
-            };
-            Cart LoggedCart = new Cart
-            {
-                //CartId = 1,
-                GuestId = null,
-                UserId = 1
-            };
-            Cart GCart = new Cart
-            {
-                //CartId = 2,
-                GuestId = "abc",
-                UserId = null
-            };
-            CartItem John1 = new CartItem
-            {
-                CartId = 1,
-                ProductId = 1,
-                Qty = 3
-            };
-            CartItem John2 = new CartItem
-            {
-                CartId = 1,
-                ProductId = 2,
-                Qty = 4
-            };
-            CartItem G3 = new CartItem
-            {
-                CartId = 2,
-                ProductId = 3,
-                Qty = 2
-            };
-            CartItem G4 = new CartItem
-            {
-                CartId = 2,
-                ProductId = 4,
-                Qty = 1
-            };
-            db.Add(g);
-            db.SaveChanges();
-            db.Add(LoggedCart);
-            db.Add(GCart);
-            db.SaveChanges();
-            db.Add(John1);
-            db.Add(John2);
-            db.Add(G3);
-            db.Add(G4);
-            db.SaveChanges();
-
         }
 
         protected void AddUsers()
