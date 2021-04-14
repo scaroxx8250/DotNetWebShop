@@ -1,4 +1,5 @@
 ﻿using ASPDotNetShoppingCart.Data;
+using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,18 +14,23 @@ namespace ASPDotNetShoppingCart.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly DbWebShop db;
+        //private readonly ILogger<HomeController> _logger;
 
-        private readonly AppData appData;
+
+        public HomeController(DbWebShop db)
+        {
+            this.db = db;
+        }
 
         //List<User> users = new List<User>();
 
-        public HomeController(ILogger<HomeController> logger, AppData appData)
-        {
-            _logger = logger;
-            this.appData = appData;
-            appData = new AppData();
-        }
+        //public HomeController(ILogger<HomeController> logger)
+        //{
+        //    _logger = logger;
+        //    //this.appData = appData;
+        //    //appData = new AppData();
+        //}
 
         public IActionResult Index()
         {
@@ -39,19 +45,21 @@ namespace ASPDotNetShoppingCart.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            
+            User user = db.Users.FirstOrDefault(x => x.Username == username && x.Password == password);
 
             //users.Add(new User { Username = "john", Password = "john" });
-            User user = appData.Users.Find(x => x.Username == username && x.Password == password);
+           // User user = db.Users.Find(x => x == username && x.Password == password);
 
             if (user == null)
             {
+                ViewData["username"] = username;
                 ViewData["errMsg"] = "No such user or incorrect password.";
                 return View();
             }
             else
             {
                 user.SessionId = Guid.NewGuid().ToString();
+                db.SaveChanges();
                 Response.Cookies.Append("sessionId", user.SessionId);
                 return RedirectToAction("Products");
             }
@@ -60,7 +68,7 @@ namespace ASPDotNetShoppingCart.Controllers
         public IActionResult Logout()
         {
             string sessionId = Request.Cookies["sessionId"];
-            User user = appData.Users.Find(x => x.SessionId == sessionId);
+            User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
             if (user != null)
             {
                 user.SessionId = null;
@@ -73,20 +81,22 @@ namespace ASPDotNetShoppingCart.Controllers
 
         public IActionResult Products(string searchString)
         {
-            ViewData["products"] = appData.Products;
+            List<Product> products = db.Products.ToList();
+
+            ViewData["products"] = products;
             ViewData["CurrentFilter"] = searchString;
 
-            var prod = from product in appData.Products select product;
+           
             if (!String.IsNullOrEmpty(searchString))
             {
                 //create new list for filtered products 
                 List<Product> filterPrd = new List<Product>();
 
                 //for each product in appData.Products
-                foreach (var p in prod)
+                foreach (var p in products)
                 {
-                    //if description or product name contains searched string
-                    if(p.description.ToLower().Contains (searchString.ToLower()) || p.productName.ToLower().Contains(searchString.ToLower()))
+                    //if Description or product name contains searched string
+                    if (p.Description.ToLower().Contains(searchString.ToLower()) || p.ProductName.ToLower().Contains(searchString.ToLower()))
                     {
                         //add product to list of filtered products 
                         filterPrd.Add(p);
@@ -96,92 +106,101 @@ namespace ASPDotNetShoppingCart.Controllers
                 ViewData["products"] = filterPrd;
 
 
-            }
+               }
 
+          
 
-            string sessionId = Request.Cookies["sessionId"];
-
-            if (sessionId != null)
-            {
-                User user = appData.Users.Find(x => x.SessionId == sessionId);
-
+              string sessionId = Request.Cookies["sessionId"];
+            if (sessionId!=null){
+                User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
+                
                 // If user == null, this means that there is no such user with this valid sessionId
-                // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
                 if (user == null)
-
                     return RedirectToAction("Logout", "Home");
 
                 // Store sessionId in the ViewData dictionary with a key called "sessionId"
                 ViewData["sessionId"] = sessionId;
                 ViewData["username"] = user.Username;
                 ViewData["cart"] = user.Usercart;
+
             }
             else
             {
-                Guest guest = new Guest()
-                {
-                    GsessionId = Guid.NewGuid().ToString()
-                };
+                //Guest guest = new Guest()
+                //{
+                //    GsessionId = Guid.NewGuid().ToString()
+                //};
 
-                 appData.Guests.Add(guest);
+                //Response.Cookies.Append("GsessionId", guest.GsessionId);
 
-                Response.Cookies.Append("GsessionId", guest.GsessionId);
-
-                ViewData["GSessionId"] = guest.GsessionId;
+                //ViewData["GSessionId"] = guest.GsessionId;
+                //ViewData["cart"] =guest.Usercart;
             }
+
+
+
+
+            //if (sessionId != null)
+            //{
+            //    User user = appData.Users.Find(x => x.SessionId == sessionId);
+
+            //   
+            //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+            //    if (user == null)
+
+            //        return RedirectToAction("Logout", "Home");
+
+            //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
+            //    ViewData["sessionId"] = sessionId;
+            //    ViewData["username"] = user.Username;
+            //    //ViewData["cart"] = user.Usercart;
+            //}
+            //else
+            //{
+            //    Guest guest = new Guest()
+            //    {
+            //        GsessionId = Guid.NewGuid().ToString()
+            //    };
+
+            //     appData.Guests.Add(guest);
+
+            //    Response.Cookies.Append("GsessionId", guest.GsessionId);
+
+            //    ViewData["GSessionId"] = guest.GsessionId;
+            //}
 
             return View();
         }
         public IActionResult Cart()
         {
-            //mock
-            string[] imgs = { "/img/NET_Analytics.png",
-            "/img/NET_Charts.png",
-            "/img/NET_Machine_Learning.png"};
+          
+            //string sessionId = Request.Cookies["sessionId"];
 
-            string[] product = { "NET_Analytics",
-            "NET_Charts",
-            "NET_Machine_Learning"};
+            //if (sessionId != null)
+            //{
+            //    User user = appData.Users.Find(x => x.SessionId == sessionId);
 
-            string[] description = { "Performs data mining and analytics easily in .NET.",
-            "Brings powerful charting capabilities to your .NET applications.",
-            "Supercharged .NET machine learning libraries."};
+            //    // If user == null, this means that there is no such user with this valid sessionId
+            //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+            //    if (user == null)
 
-            string[] price = { "399", "99", "299" };
+            //        return RedirectToAction("Logout", "Home");
 
-            ViewData["images"] = imgs;
-            ViewData["Names"] = product;
-            ViewData["Description"] = description;
-            ViewData["Price"] = price;
+            //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
+            //    ViewData["sessionId"] = sessionId;
+            //    ViewData["username"] = user.Username;
+            //   // ViewData["cart"] = user.Usercart;
+            //}
+            //else
+            //{
+            //    sessionId = Request.Cookies["GSessionId"];
 
+            //    Guest guest = appData.Guests.Find(x => x.GsessionId == sessionId);
 
-            string sessionId = Request.Cookies["sessionId"];
+            //    ViewData["GSessionId"] = guest.GsessionId;
 
-            if (sessionId != null)
-            {
-                User user = appData.Users.Find(x => x.SessionId == sessionId);
-
-                // If user == null, this means that there is no such user with this valid sessionId
-                // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
-                if (user == null)
-
-                    return RedirectToAction("Logout", "Home");
-
-                // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                ViewData["sessionId"] = sessionId;
-                ViewData["username"] = user.Username;
-                ViewData["cart"] = user.Usercart;
-            }
-            else
-            {
-                sessionId = Request.Cookies["GSessionId"];
-
-                Guest guest = appData.Guests.Find(x => x.GsessionId == sessionId);
-
-                ViewData["GSessionId"] = guest.GsessionId;
-
-                ViewData["Guestcart"] = guest.Usercart;
-            }
+            //    //ViewData["Guestcart"] = guest.Usercart;
+            //}
 
             return View();
         }
@@ -195,7 +214,7 @@ namespace ASPDotNetShoppingCart.Controllers
             "NET_Charts",
             "NET_Machine_Learning"};
 
-            string[] description = { "Performs data mining and analytics easily in .NET.",
+            string[] Description = { "Performs data mining and analytics easily in .NET.",
             "Brings powerful charting capabilities to your .NET applications.",
             "Supercharged .NET machine learning libraries."};
 
@@ -207,7 +226,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             ViewData["images"] = imgs;
             ViewData["Names"] = product;
-            ViewData["Description"] = description;
+            ViewData["Description"] = Description;
             ViewData["Quantity"] = Quantity;
             ViewData["AcCode"] = ActivationCode;
 
@@ -223,22 +242,22 @@ namespace ASPDotNetShoppingCart.Controllers
             else
             {
                 // Search for matching sessionId
-                User user = appData.Users.Find(x => x.SessionId == sessionId);
+                //User user = appData.Users.Find(x => x.SessionId == sessionId);
 
                 // If user == null, this means that there is no such user with this valid sessionId
                 // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
-                if (user == null)
-                {
-                    return RedirectToAction("Logout", "Home");
-                }
-                else
-                {
-                    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                    ViewData["sessionId"] = sessionId;
-                    ViewData["username"] = user.Username;
+                //if (user == null)
+                //{
+                //    return RedirectToAction("Logout", "Home");
+                //}
+                //else
+                //{
+                //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
+                //    ViewData["sessionId"] = sessionId;
+                //   // ViewData["username"] = user.Username;
 
-                    //ViewData["cart"] = user.Cart;
-                }
+                //    //ViewData["cart"] = user.Cart;
+                //}
 
             }
 
@@ -247,17 +266,19 @@ namespace ASPDotNetShoppingCart.Controllers
 
 
         public IActionResult AddToCart([FromBody] Product product)
+            
         {
+            int countItems = 0;
             //initialize selectedProducts object
             SelectedProducts sp = new SelectedProducts();
 
             //get the sessionid
             string sessionId = Request.Cookies["sessionId"];
 
-            if(sessionId != null)
+            if (sessionId != null)
             {
                 //get the user object
-                User user = appData.Users.Find(x => x.SessionId == sessionId);
+                User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
                 if (user == null)
                     return Json(new { success = false });   // error; no session
 
@@ -268,7 +289,7 @@ namespace ASPDotNetShoppingCart.Controllers
                     sp.Qty = 1;
 
                     //set countItems to be Qty that user has clicked on the button.
-                    int countItems = sp.Qty;
+                    countItems = sp.Qty;
 
                     //if the cart is empty, add the product and countItem.
                     if (user.Usercart.Products.Count == 0)
@@ -288,7 +309,7 @@ namespace ASPDotNetShoppingCart.Controllers
                         foreach (var item in user.Usercart.Products)
                         {
                             //add quantity if the product matches
-                            if (item.Products.ProductId == sp.Products.ProductId)
+                            if (item.Products.Id == sp.Products.Id)
                             {
                                 item.Qty++;
                                 match = true;
@@ -307,62 +328,63 @@ namespace ASPDotNetShoppingCart.Controllers
 
                 }
             }
-            else
-            {
-                //store GsessionId into sessionId variable;
-                sessionId = Request.Cookies["GsessionId"];
+            return Json(new { success = false });   // error; no session
+            //else
+            //{
+            //    //store GsessionId into sessionId variable;
+            //    sessionId = Request.Cookies["GsessionId"];
 
-                //get the guest object
-                Guest guest = appData.Guests.Find(x => x.GsessionId == sessionId);
+            //    //get the guest object
+            //    Guest guest = guest.(x => x.GsessionId == sessionId);
 
-                //pass the request product to sp object 
-                sp.Products = product;
-                sp.Qty = 1;
+            //    //pass the request product to sp object 
+            //    sp.Products = product;
+            //    sp.Qty = 1;
 
-                //set countItems to be Qty that user has clicked on the button.
-                int countItems = sp.Qty;
+            //    //set countItems to be Qty that user has clicked on the button.
+            //    int countItems = sp.Qty;
 
-                //if the cart is empty, add the product and countItem.
-                if (guest.Usercart.Products.Count == 0)
-                {
-                    guest.Usercart.Products.Add(sp);
-                }
-                else
-                {
-                    //get the total items of the cart
-                    foreach (var item in guest.Usercart.Products)
-                    {
-                        countItems += item.Qty;
-                    }
+            //    //if the cart is empty, add the product and countItem.
+            //    if (guest.Usercart.Products.Count == 0)
+            //    {
+            //        guest.Usercart.Products.Add(sp);
+            //    }
+            //    else
+            //    {
+            //        //get the total items of the cart
+            //        foreach (var item in guest.Usercart.Products)
+            //        {
+            //            countItems += item.Qty;
+            //        }
 
-                    bool match = false;
-                    //loop thru the products
-                    foreach (var item in guest.Usercart.Products)
-                    {
-                        //add quantity if the product matches
-                        if (item.Products.ProductId == sp.Products.ProductId)
-                        {
-                            item.Qty++;
-                            match = true;
-                            break;
-                        }
-                    }
-                    //add new products if not match
-                    if (match == false)
-                    {
-                        guest.Usercart.Products.Add(sp);
-                    }
+            //        bool match = false;
+            //        //loop thru the products
+            //        foreach (var item in guest.Usercart.Products)
+            //        {
+            //            //add quantity if the product matches
+            //            if (item.Products.Id == sp.Products.Id)
+            //            {
+            //                item.Qty++;
+            //                match = true;
+            //                break;
+            //            }
+            //        }
+            //        //add new products if not match
+            //        if (match == false)
+            //        {
+            //            guest.Usercart.Products.Add(sp);
+            //        }
 
-                }
-                return Json(new { success = true, quantity = countItems });
-            }
-            
-           
+            //    }
+            //    return Json(new { success = true, quantity = countItems });
+            //}
+
+
         }
 
 
 
-        public IActionResult Privacy()
+                public IActionResult Privacy()
         {
             return View();
         }
