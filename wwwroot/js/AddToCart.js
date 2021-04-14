@@ -39,7 +39,7 @@ function SendItem(id, name, price, desc, image) {
     price = price * 1;
 
         data = {
-            "ProductId": id,
+            "Id": id,
             "ProductName": name,
             "Price": price,
             "description": desc,
