@@ -11,12 +11,7 @@ namespace ASPDotNetShoppingCart.Models
         [Key]
         [Required]
         public string GsessionId { get; set; }
+
         public virtual Cart Usercart { get; set; }
-
-        //public Guest()
-        //{
-        //    Usercart = new Cart();
-
-        //}
     }
 }

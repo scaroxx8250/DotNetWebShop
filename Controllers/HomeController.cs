@@ -107,7 +107,6 @@ namespace ASPDotNetShoppingCart.Controllers
                 ViewData["products"] = filterPrd;
             }
 
-
             string sessionId = Request.Cookies["sessionId"];
 
             //for User
@@ -138,7 +137,6 @@ namespace ASPDotNetShoppingCart.Controllers
                         db.Add(cart);
                         db.SaveChanges();
                     }
-
                     ViewData["cart"] = cart;
                 }
             }
@@ -178,7 +176,6 @@ namespace ASPDotNetShoppingCart.Controllers
                     db.Add(guestCart);
                     db.SaveChanges();
                 }
-
                 ViewData["cart"] = guestCart;
                 ViewData["GsessionId"] = GsessionId;
 
@@ -349,10 +346,6 @@ namespace ASPDotNetShoppingCart.Controllers
                     return Json(new { success = false });
                 }
             }
-
-
-           
-
         }
 
 

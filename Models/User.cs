@@ -22,12 +22,12 @@ namespace ASPDotNetShoppingCart.Models
 
         public virtual PurchasedHistory PurchasedHistory { get; set; }
 
-        //public Cart Usercart { get; set; }
+        public virtual Cart Usercart { get; set; }
 
-        //public User()
-        //{
-        //    Usercart = new Cart();
+        public User()
+        {
+            Usercart = new Cart();
 
-        //}
+        }
     }
 }

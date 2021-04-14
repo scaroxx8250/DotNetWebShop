@@ -30,7 +30,6 @@ namespace ASPDotNetShoppingCart.Util
             AddProducts("ProductDetails.data");
             // AddProducts(appData.Products, "ProductDetails.data");
         }
-
         protected void AddUsers()
         {
             string[] names = { "john", "mary" };
