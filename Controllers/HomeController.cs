@@ -2,6 +2,7 @@
 using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -132,9 +133,11 @@ namespace ASPDotNetShoppingCart.Controllers
                     //if the cart is null, create cart for user
                     if (cart == null)
                     {
-                        cart = new Cart();
-                        cart.UserId = user.Id;
-                        db.Add(cart);
+                        cart = new Cart()
+                        {
+                            UserId = user.Id
+                        };
+                        db.Carts.Add(cart);
                         db.SaveChanges();
                     }
                     ViewData["cart"] = cart;
@@ -160,7 +163,7 @@ namespace ASPDotNetShoppingCart.Controllers
                     {
                         GsessionId = GsessionId
                     };
-                    db.Add(guest);
+                    db.Guests.Add(guest);
                     db.SaveChanges();
                     Response.Cookies.Append("GsessionId", guest.GsessionId);
                 }
@@ -175,8 +178,15 @@ namespace ASPDotNetShoppingCart.Controllers
                     {
                         GuestId = GsessionId
                     };
-                    db.Add(guestCart);
-                    db.SaveChanges();
+                    try
+                    {
+                        db.Carts.Add(guestCart);
+                        db.SaveChanges();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
                 }
                 ViewData["cart"] = guestCart;
                 ViewData["GsessionId"] = GsessionId;
