@@ -87,7 +87,7 @@ namespace ASPDotNetShoppingCart.Controllers
             ViewData["products"] = products;
             ViewData["CurrentFilter"] = searchString;
 
-
+            // Search functionality
             if (!String.IsNullOrEmpty(searchString))
             {
                 //create new list for filtered products 
@@ -171,8 +171,10 @@ namespace ASPDotNetShoppingCart.Controllers
                 //if the cart is null, create cart for guest
                 if (guestCart == null)
                 {
-                    guestCart = new Cart();
-                    guestCart.GuestId = GsessionId;
+                    guestCart = new Cart()
+                    {
+                        GuestId = GsessionId
+                    };
                     db.Add(guestCart);
                     db.SaveChanges();
                 }
