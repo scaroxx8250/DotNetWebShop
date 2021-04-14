@@ -60,7 +60,9 @@ namespace ASPDotNetShoppingCart.Controllers
             {
                 user.SessionId = Guid.NewGuid().ToString();
                 Response.Cookies.Append("sessionId", user.SessionId);
+                db.SaveChanges();
                 return RedirectToAction("Products");
+
             }
         }
 
@@ -143,13 +145,33 @@ namespace ASPDotNetShoppingCart.Controllers
         }
         public IActionResult Cart()
         {
-          
-            //string sessionId = Request.Cookies["sessionId"];
+            Cart cart = new Cart();
+            //IEnumerable<Cart> cart = null;
+            User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
+            if (User != null)
+            {
+                cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
+                ViewData["Username"] = users.Username;
+            }
+            else //Session ID provided, but user could not be found i.e. guest
+            {
+                //Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == Request.Cookies["GsessionId"]);
+                cart = db.Carts.FirstOrDefault(x => x.GuestId == "abc");
+            }
 
-            //if (sessionId != null)
-            //{
-            //    User user = appData.Users.Find(x => x.SessionId == sessionId);
+            ViewData["sessionId"] = Request.Cookies["sessionId"];
+            ViewData["Cart"] = cart;
 
+
+            return View();
+        }
+
+            ////string sessionId = Request.Cookies["sessionId"];
+
+            ////if (sessionId != null)
+            ////{ 
+            ////    User users = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
+                
             //    // If user == null, this means that there is no such user with this valid sessionId
             //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
             //    if (user == null)
@@ -159,7 +181,7 @@ namespace ASPDotNetShoppingCart.Controllers
             //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
             //    ViewData["sessionId"] = sessionId;
             //    ViewData["username"] = user.Username;
-            //   // ViewData["cart"] = user.Usercart;
+            //    // ViewData["cart"] = user.Usercart;
             //}
             //else
             //{
@@ -172,67 +194,67 @@ namespace ASPDotNetShoppingCart.Controllers
             //    //ViewData["Guestcart"] = guest.Usercart;
             //}
 
-            return View();
-        }
-        public IActionResult Purchases()
-        {
-            string[] imgs = { "/img/NET_Analytics.png",
-            "/img/NET_Charts.png",
-            "/img/NET_Machine_Learning.png"};
+            //return View();
+        
+        //public IActionResult Purchases()
+        //{
+        //    string[] imgs = { "/img/NET_Analytics.png",
+        //    "/img/NET_Charts.png",
+        //    "/img/NET_Machine_Learning.png"};
 
-            string[] product = { "NET_Analytics",
-            "NET_Charts",
-            "NET_Machine_Learning"};
+        //    string[] product = { "NET_Analytics",
+        //    "NET_Charts",
+        //    "NET_Machine_Learning"};
 
-            string[] Description = { "Performs data mining and analytics easily in .NET.",
-            "Brings powerful charting capabilities to your .NET applications.",
-            "Supercharged .NET machine learning libraries."};
+        //    string[] Description = { "Performs data mining and analytics easily in .NET.",
+        //    "Brings powerful charting capabilities to your .NET applications.",
+        //    "Supercharged .NET machine learning libraries."};
 
-            string[] Quantity = { "3", "3", "3" };
+        //    string[] Quantity = { "3", "3", "3" };
 
-            string[] ActivationCode = { "1", "2", "3" };
+        //    string[] ActivationCode = { "1", "2", "3" };
 
 
 
-            ViewData["images"] = imgs;
-            ViewData["Names"] = product;
-            ViewData["Description"] = Description;
-            ViewData["Quantity"] = Quantity;
-            ViewData["AcCode"] = ActivationCode;
+        //    ViewData["images"] = imgs;
+        //    ViewData["Names"] = product;
+        //    ViewData["Description"] = Description;
+        //    ViewData["Quantity"] = Quantity;
+        //    ViewData["AcCode"] = ActivationCode;
 
-            //ViewData["products"] = appData.Products;
+        //    //ViewData["products"] = appData.Products;
 
-            string sessionId = Request.Cookies["sessionId"];
+        //    string sessionId = Request.Cookies["sessionId"];
 
-            // No sessionId
-            if (sessionId == null)
-            {
-                return RedirectToAction("Login", "Home");
-            }
-            else
-            {
-                // Search for matching sessionId
-                //User user = appData.Users.Find(x => x.SessionId == sessionId);
+        //    // No sessionId
+        //    if (sessionId == null)
+        //    {
+        //        return RedirectToAction("Login", "Home");
+        //    }
+        //    else
+        //    {
+        //        // Search for matching sessionId
+        //        //User user = appData.Users.Find(x => x.SessionId == sessionId);
 
-                // If user == null, this means that there is no such user with this valid sessionId
-                // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
-                //if (user == null)
-                //{
-                //    return RedirectToAction("Logout", "Home");
-                //}
-                //else
-                //{
-                //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                //    ViewData["sessionId"] = sessionId;
-                //   // ViewData["username"] = user.Username;
+        //        // If user == null, this means that there is no such user with this valid sessionId
+        //        // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+        //        //if (user == null)
+        //        //{
+        //        //    return RedirectToAction("Logout", "Home");
+        //        //}
+        //        //else
+        //        //{
+        //        //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
+        //        //    ViewData["sessionId"] = sessionId;
+        //        //   // ViewData["username"] = user.Username;
 
-                //    //ViewData["cart"] = user.Cart;
-                //}
+        //        //    //ViewData["cart"] = user.Cart;
+        //        //}
 
-            }
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
 
         public IActionResult AddToCart([FromBody] Product product)
