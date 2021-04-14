@@ -28,11 +28,8 @@ namespace ASPDotNetShoppingCart.Util
           
             AddUsers();
             AddProducts("ProductDetails.data");
-           // AddProducts(appData.Products, "ProductDetails.data");
-           
-
-    }
-
+            // AddProducts(appData.Products, "ProductDetails.data");
+        }
         protected void AddUsers()
         {
             string[] names = { "john", "mary" };
@@ -42,7 +39,7 @@ namespace ASPDotNetShoppingCart.Util
                 db.Users.Add(new User
                 {
                     Username = names[i],
-                    Password = pwd[i],
+                    Password = pwd[i]
                 }) ;
             }
 

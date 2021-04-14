@@ -27,9 +27,7 @@ namespace ASPDotNetShoppingCart.Db
         public DbSet<PurchasedHistory> PurchasedHistories { get; set; }
         public DbSet<PurchasedItems> PurchasedItems { get; set; }
         public DbSet<Guest> Guests { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
-
-
+        public DbSet<Cart>Carts { get; set; }
+        public DbSet<CartItem>CartItems { get; set; }
     }
 }

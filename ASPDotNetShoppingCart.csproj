@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\css\loginBootstrap\" />
   </ItemGroup>
 
 </Project>
