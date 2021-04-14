@@ -56,7 +56,9 @@ namespace ASPDotNetShoppingCart.Controllers
             else
             {
                 //store sessionID to database user table
-
+                // check for gsessionid, instantiate guest.cart as cart object to assign to signed in user
+                // db.guest.remove(cart)
+                // db.users.add(cart)
                 user.SessionId = Guid.NewGuid().ToString();
                 db.SaveChanges();
                 Response.Cookies.Append("sessionId", user.SessionId);
@@ -350,9 +352,54 @@ namespace ASPDotNetShoppingCart.Controllers
 
         public IActionResult Purchases()
         {
+            // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
 
+            User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
+            if (User != null)
+            {
+                cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
+                ViewData["Username"] = users.Username;
+            }
+
+            // for guest users who directly use url to access purchases, redirect to login page.
+            
+            // create new row in purchasedhistory in DB
+            DateTime localDT = DateTime.Now;
+            PurchasedHistory newHistory = new PurchasedHistory
+            {
+                DateTime = localDT.Ticks,
+                UserId = Convert.ToInt32(cart.UserId)
+            };
+            db.Add(newHistory);
+            db.SaveChanges();
+
+            // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
+            int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
+            foreach (CartItem x in cart.CartItem)
+            {
+                GenerateCode(x.ProductId, x.Qty, HistoryId);
+            }
+
+            // clear user cart on checkout.
+            db.Carts.Remove(cart);
+            db.SaveChanges();
             return View();
+        }
+
+        public void GenerateCode(int productId, int qty, int historyId)
+        {
+            for (int i = 0; i < qty; i++)
+            {
+                PurchasedItems newItem = new PurchasedItems
+                {
+                    ActivationCode = Guid.NewGuid().ToString(),
+                    PurchasedHistoryId = historyId,
+                    ProductId = productId
+                };
+                db.Add(newItem);
+            }
+            db.SaveChanges();
         }
 
         public IActionResult Privacy()
