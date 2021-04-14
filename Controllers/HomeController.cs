@@ -204,10 +204,13 @@ namespace ASPDotNetShoppingCart.Controllers
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
-            else //Session ID provided, but user could not be found i.e. guest
+
+            string Gsessionid = Request.Cookies["GsessionId"];
+            if (Gsessionid != null && users.SessionId == null)
+            //Session ID provided, but user could not be found i.e. guest
             {
-                //Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == Request.Cookies["GsessionId"]);
-                cart = db.Carts.FirstOrDefault(x => x.GuestId == "abc");
+                Guest guest = db.Guests.FirstOrDefault(x => x.GsessionId == Gsessionid);
+                cart = db.Carts.FirstOrDefault(x => x.GuestId == guest.GsessionId);
             }
 
             ViewData["sessionId"] = Request.Cookies["sessionId"];
