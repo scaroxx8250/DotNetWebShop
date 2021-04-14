@@ -55,7 +55,10 @@ namespace ASPDotNetShoppingCart.Controllers
             }
             else
             {
+                //store sessionID to database user table
+
                 user.SessionId = Guid.NewGuid().ToString();
+                db.SaveChanges();
                 Response.Cookies.Append("sessionId", user.SessionId);
                 return RedirectToAction("Products");
             }
@@ -124,11 +127,15 @@ namespace ASPDotNetShoppingCart.Controllers
                     //Get the cart that is tag to the user
                     Cart cart = db.Carts.FirstOrDefault(x => x.UserId == user.Id);
 
+                    //if the cart is null, create cart for user
                     if(cart == null)
                     {
-                        cart.
-
+                        cart = new Cart();
+                        cart.UserId = user.Id;
+                        db.Add(cart);
+                        db.SaveChanges();
                     }
+
                     ViewData["cart"] = cart;
                 }
             }
