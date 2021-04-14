@@ -47,9 +47,6 @@ namespace ASPDotNetShoppingCart.Controllers
         {
             User user = db.Users.FirstOrDefault(x => x.Username == username && x.Password == password);
 
-            //users.Add(new User { Username = "john", Password = "john" });
-           // User user = db.Users.Find(x => x == username && x.Password == password);
-
             if (user == null)
             {
                 ViewData["username"] = username;
@@ -85,7 +82,7 @@ namespace ASPDotNetShoppingCart.Controllers
             ViewData["products"] = products;
             ViewData["CurrentFilter"] = searchString;
 
-           
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 //create new list for filtered products 
@@ -103,47 +100,75 @@ namespace ASPDotNetShoppingCart.Controllers
                 }
 
                 ViewData["products"] = filterPrd;
+            }
 
 
-               }
+            string sessionId = Request.Cookies["sessionId"];
 
+            if (sessionId != null)
+            {
+                User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
 
-                //string sessionId = Request.Cookies["sessionId"];
+                // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+                if (user == null)
+                {
+                    return RedirectToAction("Logout", "Home");
+                }
 
-                //if (sessionId != null)
-                //{
-                //    User user = appData.Users.Find(x => x.SessionId == sessionId);
+                else
+                {
+                    //Store sessionId in the ViewData dictionary with a key called "sessionId"
+                    ViewData["sessionId"] = sessionId;
+                    ViewData["username"] = user.Username;
 
-                //    // If user == null, this means that there is no such user with this valid sessionId
-                //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
-                //    if (user == null)
+                    //Get the cart that is tag to the user
+                    Cart cart = db.Carts.FirstOrDefault(x => x.UserId == user.Id);
 
-                //        return RedirectToAction("Logout", "Home");
+                    if(cart == null)
+                    {
+                        cart.
 
-                //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
-                //    ViewData["sessionId"] = sessionId;
-                //    ViewData["username"] = user.Username;
-                //    //ViewData["cart"] = user.Usercart;
-                //}
-                //else
-                //{
-                //    Guest guest = new Guest()
-                //    {
-                //        GsessionId = Guid.NewGuid().ToString()
-                //    };
+                    }
+                    ViewData["cart"] = cart;
+                }
+            }
+            else
+            {
 
-                //     appData.Guests.Add(guest);
+            }
+            //{
+            //    User user = appData.Users.Find(x => x.SessionId == sessionId);
 
-                //    Response.Cookies.Append("GsessionId", guest.GsessionId);
+            //    // If user == null, this means that there is no such user with this valid sessionId
+            //    // This sessionId was bogus, send to Logout page (which will clear the sessionId so that it cannot be reused)
+            //    if (user == null)
 
-                //    ViewData["GSessionId"] = guest.GsessionId;
-                //}
+            //        return RedirectToAction("Logout", "Home");
 
-                return View();
+            //    // Store sessionId in the ViewData dictionary with a key called "sessionId"
+            //    ViewData["sessionId"] = sessionId;
+            //    ViewData["username"] = user.Username;
+            //    //ViewData["cart"] = user.Usercart;
+            //}
+            //else
+            //{
+            //    Guest guest = new Guest()
+            //    {
+            //        GsessionId = Guid.NewGuid().ToString()
+            //    };
+
+            //     appData.Guests.Add(guest);
+
+            //    Response.Cookies.Append("GsessionId", guest.GsessionId);
+
+            //    ViewData["GSessionId"] = guest.GsessionId;
+            //}
+
+            return View();
         }
         public IActionResult Cart()
         {
-          
+
             //string sessionId = Request.Cookies["sessionId"];
 
             //if (sessionId != null)
@@ -236,7 +261,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
 
         public IActionResult AddToCart([FromBody] Product product)
-            
+
         {
             return View();
             ////initialize selectedProducts object
