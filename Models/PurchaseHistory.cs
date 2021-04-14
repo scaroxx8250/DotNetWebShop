@@ -9,6 +9,7 @@ namespace ASPDotNetShoppingCart.Models
     public class PurchasedHistory
     {
         [Required]
+        [Key]
         public int Id { get; set; }
 
         [Required]
