@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Models
 {
-    public class PurchaseHistory
+    public class PurchasedHistory
     {
         [Required]
         public int Id { get; set; }

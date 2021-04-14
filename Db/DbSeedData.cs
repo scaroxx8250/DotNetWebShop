@@ -42,8 +42,7 @@ namespace ASPDotNetShoppingCart.Util
                 db.Users.Add(new User
                 {
                     Username = names[i],
-                    Password = pwd[i],
-                    SessionId = Guid.NewGuid().ToString()
+                    Password = pwd[i]
                 }) ;
             }
 

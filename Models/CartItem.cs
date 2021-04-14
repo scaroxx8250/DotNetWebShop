@@ -6,16 +6,15 @@ using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Models
 {
-    public class PurchasedItems
+    public class CartItem
     {
-        [Key]
-        [Required]
-        public string ActivationCode { get; set; }
+        public int Qty { get; set; }
 
-        public int PurchasedHistoryId { get; set; }
-        public virtual PurchasedHistory PurchasedHistory { get; set; }
+        public int CartId { get; set; }
+        public virtual Cart Cart { get; set; }
 
         public int ProductId { get; set; }
+
         public virtual Product Product { get; set; }
 
     }
