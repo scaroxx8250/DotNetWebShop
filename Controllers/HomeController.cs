@@ -173,6 +173,17 @@ namespace ASPDotNetShoppingCart.Controllers
         }
         public IActionResult Cart()
         {
+            IEnumerable<Cart> cart = null;
+            User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
+            if (User != null)
+            {
+                cart = db.Carts.Where(x => x.UserId == users.Id);
+            }
+            ViewData["Username"] = users.Username;
+            ViewData["sessionId"] = Request.Cookies["sessionId"];
+            ViewData["Cart"] = cart;
+
+            return View();
           
             //string sessionId = Request.Cookies["sessionId"];
 
@@ -201,8 +212,6 @@ namespace ASPDotNetShoppingCart.Controllers
 
             //    //ViewData["Guestcart"] = guest.Usercart;
             //}
-
-            return View();
         }
         public IActionResult Purchases()
         {

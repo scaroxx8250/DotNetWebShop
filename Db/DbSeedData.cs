@@ -29,9 +29,9 @@ namespace ASPDotNetShoppingCart.Util
             AddUsers();
             AddProducts("ProductDetails.data");
            // AddProducts(appData.Products, "ProductDetails.data");
+           
 
-
-        }
+    }
 
         protected void AddUsers()
         {

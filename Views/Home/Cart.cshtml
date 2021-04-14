@@ -1,16 +1,6 @@
 ﻿@{ ViewData["Title"] = "Cart";
 
-    string GSessionId = "";
-    Cart Usercart = new Cart();
-    if (ViewData["GSessionId"] != null)
-    {
-        GSessionId = (string)ViewData["GSessionId"];
-        Usercart = (Cart)ViewData["Guestcart"];
-    }
-    else
-    {
-        Usercart = (Cart)ViewData["cart"];
-    }
+    IEnumerable<Cart> cart = (IEnumerable<Cart>)ViewData["Cart"];
 
 }
 
@@ -180,7 +170,7 @@
                         }
                         else
                         {
-                            @ViewData["username"]
+                            @ViewData["Username"]
                             ViewData["link"] = "/Home/Logout";
                             ViewData["linkName"] = "Logout";
                         }
