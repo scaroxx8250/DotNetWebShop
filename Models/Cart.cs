@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,10 +8,17 @@ namespace ASPDotNetShoppingCart.Models
 {
     public class Cart
     {
-        public Cart()
-        {
-            Products = new List<SelectedProducts>();
-        }
-        public List<SelectedProducts> Products { get; set; }
+        [Required]
+        public int CartId { get; set; }
+
+        public string GuestId { get; set; }
+
+        public virtual Guest Guest { get; set; }
+
+        public int? UserId { get; set; }
+
+        public virtual User User { get; set; }
+
+        public virtual ICollection<CartItem> CartItem { get; set; }
     }
 }
