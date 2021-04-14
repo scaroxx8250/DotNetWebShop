@@ -182,20 +182,22 @@ namespace ASPDotNetShoppingCart.Controllers
             }
             return View();
         }
+
         public IActionResult Cart()
         {
             Cart cart = new Cart();
-            //IEnumerable<Cart> cart = null;
+            
             User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
             if (User != null)
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
-            else //Session ID provided, but user could not be found i.e. guest
+            string GsessionId = Request.Cookies["GsessionId"];            
+            if (GsessionId != null && users.SessionId is null) //Session ID provided, but user could not be found i.e. guest
             {
-                //Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == Request.Cookies["GsessionId"]);
-                cart = db.Carts.FirstOrDefault(x => x.GuestId == "abc");
+                Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == GsessionId);
+                cart = db.Carts.FirstOrDefault(x => x.GuestId == guests.GsessionId);
             }
 
             ViewData["sessionId"] = Request.Cookies["sessionId"];
@@ -204,8 +206,6 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View();
         }
-
-
 
         public IActionResult AddToCart([FromBody] Product product)
         {
@@ -348,7 +348,12 @@ namespace ASPDotNetShoppingCart.Controllers
             }
         }
 
+        public IActionResult Purchases()
+        {
+            Cart cart = new Cart();
 
+            return View();
+        }
 
         public IActionResult Privacy()
         {
