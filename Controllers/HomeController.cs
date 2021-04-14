@@ -194,7 +194,7 @@ namespace ASPDotNetShoppingCart.Controllers
                 ViewData["Username"] = users.Username;
             }
             string GsessionId = Request.Cookies["GsessionId"];            
-            if (GsessionId != null && users.SessionId is null) //Session ID provided, but user could not be found i.e. guest
+            if (GsessionId != null && users.SessionId == null) //Session ID provided, but user could not be found i.e. guest
             {
                 Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == GsessionId);
                 cart = db.Carts.FirstOrDefault(x => x.GuestId == guests.GsessionId);
