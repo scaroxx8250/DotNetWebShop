@@ -108,6 +108,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             string sessionId = Request.Cookies["sessionId"];
 
+            //for User
             if (sessionId != null)
             {
                 User user = db.Users.FirstOrDefault(x => x.SessionId == sessionId);
@@ -139,8 +140,45 @@ namespace ASPDotNetShoppingCart.Controllers
                     ViewData["cart"] = cart;
                 }
             }
+            //for guest (no sessionId)
             else
             {
+                string GsessionId = Request.Cookies["GsessionId"];
+
+                //existing guest that come to the product page again
+                if(GsessionId != null)
+                {
+                    Guest guest = db.Guests.FirstOrDefault(x => x.GsessionId == GsessionId);
+                }
+                else
+                {
+                    //new guest
+
+                    GsessionId = Guid.NewGuid().ToString();
+                   
+                    Guest guest = new Guest()
+                    {
+                        GsessionId = GsessionId
+                    };
+                    db.Add(guest);
+                    db.SaveChanges();
+                    Response.Cookies.Append("GsessionId", guest.GsessionId);
+                }
+
+                //Get the cart that is tag to the guest
+                Cart guestCart = db.Carts.FirstOrDefault(x => x.GuestId == GsessionId);
+
+                //if the cart is null, create cart for guest
+                if (guestCart == null)
+                {
+                    guestCart = new Cart();
+                    guestCart.GuestId = GsessionId;
+                    db.Add(guestCart);
+                    db.SaveChanges();
+                }
+
+                ViewData["cart"] = guestCart;           
+                ViewData["GsessionId"] = GsessionId;
 
             }
             //{
