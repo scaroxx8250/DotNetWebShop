@@ -199,14 +199,14 @@ namespace ASPDotNetShoppingCart.Controllers
             Cart cart = new Cart();
             //IEnumerable<Cart> cart = null;
             User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
-            if (User != null)
+            if (users != null)
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
 
             string Gsessionid = Request.Cookies["GsessionId"];
-            if (Gsessionid != null && users.SessionId == null)
+            if (Gsessionid != null)
             //Session ID provided, but user could not be found i.e. guest
             {
                 Guest guest = db.Guests.FirstOrDefault(x => x.GsessionId == Gsessionid);

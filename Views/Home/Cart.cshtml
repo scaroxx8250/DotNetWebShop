@@ -3,8 +3,7 @@
 }
 @section Scripts
     {
-    <script src="~/js/ChgCartQty.js"></script>
-    <script src="~/js/RemoveCartPrd.js"></script>
+    <script src="~/js/Cart.js"></script>
 }
 <style type="text/css">
     .cart {
@@ -206,19 +205,26 @@
             </tr>
 
             @if (cart != null)
-            {@*CartItem is ICollection*@
-                            @foreach (CartItem item in cart.CartItem)
-                            {
-            @:<tr class="cart-item" id="@item.ProductId">
-                @:<td><img src=@item.Product.ImagePath width="125" height="66" /></td>
-                @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
-                @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
-                @:<td><span class="cart-price">@item.Product.Price</span></td>
-                @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
-                @:<td><span class="cart-subtotal">0</span></td>
-                @:<td><button type="button" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" class="btn shadow-none cart-del">Delete</button></td>
-            @:</tr>
-        
+            {
+                @*CartItem is ICollection*@
+                @foreach (CartItem item in cart.CartItem)
+                {
+                    @:<tr class="cart-item" id="@item.ProductId">
+                        @:<td><img src=@item.Product.ImagePath width="125" height="66" /></td>
+                        @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
+                        @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
+                        @:<td><span class="cart-price">@item.Product.Price</span></td>
+                        @:<td>
+                            <button class="cart-reduce" data-product="@item.Product.ProductName" onclick="decreaseValue()" value="Decrease Value">-</button>
+                            <span style="padding: 5px" id="@item.Product.ProductName">@item.Qty</span>
+                            <button class="cart-add" data-product="@item.Product.ProductName" onclick="increaseValue()" value="Increase Value">+</button>
+                        @:</td>
+                        @:<td><span class="cart-subtotal">$@(item.Product.Price*item.Qty).00</span></td>
+                        @:<td><button type="button" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" class="btn shadow-none cart-del">Delete</button></td>
+                    @:</tr>
+                }
+            }
+
 
 
 

@@ -49,7 +49,8 @@ function AddProduct(id, name, price, desc, image) {
             "ProductName": name,
             "Price": price,
             "description": desc,
-            "imagePath": image
+            "imagePath": image,
+            "DownloadLink":""
         };
   
     // send data to server
