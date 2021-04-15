@@ -123,7 +123,7 @@
 
     .cart-bottom-span {
         font-size: 14px;
-        padding: 0px 23px;
+        padding: 0px 0px;
         margin: 0 30px;
     }
 
@@ -210,8 +210,8 @@
                         @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
                         @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
                         @:<td><span class="cart-price">@item.Product.Price</span></td>
-                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
-                        @:<td><span class="cart-subtotal">0</span></td>
+                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@{ int qty = item.Qty; }@qty</span> <span class="cart-add">+</span> </td>
+                        @:<td><span class="cart-subtotal">$@(item.Product.Price*qty).00</span></td>
                         @:<td><span class="cart-del">Delete</span></td>
                     @:</tr>
                 }
@@ -234,7 +234,16 @@
 
             <tr class="cart-bottom">
                 <td colspan="6">
-                    <span class="cart-bottom-span">Total：<span class="cart-total-price">0</span></span>
+                    <span class="cart-bottom-span">Total：
+                        <span class="cart-total-price">
+                        @{ double sum = 0; }
+                        @foreach (CartItem item in cart.CartItem)
+                        {
+                            sum += item.Product.Price * item.Qty;
+                        }
+                        $@sum.00
+                        </span>
+                    </span>
                 </td>
 
             </tr>
