@@ -370,21 +370,17 @@ namespace ASPDotNetShoppingCart.Controllers
 
         public IActionResult RemoveFromCart([FromBody] CartItem product)
         {
-            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId);
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
 
             if (cartItem == null)
                 return Json(new { success = false });
 
             else
             {
-                if (cartItem.ProductId == product.ProductId)
-                {
-                    db.CartItems.Remove(cartItem);
-                    db.SaveChanges();
-
-                    return Json(new { success = true });
-                }
-                return Json(new { success = false });
+                db.CartItems.Remove(cartItem);
+                db.SaveChanges();
+                return Json(new { success = true });
+              
             }
 
 

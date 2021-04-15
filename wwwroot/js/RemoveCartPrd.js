@@ -26,14 +26,13 @@ function RemoveProduct(productId, cartId) {
 
             //error from server
             if (!data.success)
-                alert("Please try again");
+                return;
 
             //success result from server
             if (data.success)
             {
                 //remove the product shown in the html page
                 document.getElementById(productId).remove();
-                alert("The product is removed form the cart");
             }
                 
         }

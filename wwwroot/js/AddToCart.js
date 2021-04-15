@@ -28,13 +28,12 @@ function AddProduct(id, name, price, desc, image) {
 
            //error from server
             if (!data.success)
-                alert("Please try again");
+                return;
 
             //success result from server
             if (data.success)
             {
                 document.getElementById("lblCartCount").innerHTML = data.quantity;
-                alert("The product is added to the cart");
             }
             
         }
