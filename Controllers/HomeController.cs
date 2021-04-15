@@ -368,6 +368,22 @@ namespace ASPDotNetShoppingCart.Controllers
             }
         }
 
+        public IActionResult UpdateCart([FromBody] CartItem product)
+        {
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
+
+            if (cartItem == null)
+                return Json(new { success = false });
+
+            else
+            {
+                cartItem.Qty = product.Qty;
+                db.SaveChanges();
+                return Json(new { success = true });
+
+            }
+        }
+
         public IActionResult RemoveFromCart([FromBody] CartItem product)
         {
             CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);

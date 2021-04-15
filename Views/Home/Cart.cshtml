@@ -215,9 +215,9 @@
                         @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
                         @:<td><span class="cart-price">@item.Product.Price</span></td>
                         @:<td>
-                            <button class="cart-reduce" data-product="@item.Product.ProductName" value="Decrease Value">-</button>
+                            <button class="cart-reduce" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Decrease Value">-</button>
                             <span style="padding: 5px" id="@item.Product.ProductName">@item.Qty</span>
-                            <button class="cart-add" data-product="@item.Product.ProductName" value="Increase Value">+</button>
+                            <button class="cart-add" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Increase Value">+</button>
                         @:</td>
                         @:<td><span class="cart-subtotal">$@(item.Product.Price*item.Qty).00</span></td>
                         @:<td><button type="button" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" class="btn shadow-none cart-del">Delete</button></td>
