@@ -1,5 +1,7 @@
-﻿@{ ViewData["Title"] = "Cart";
+@{ ViewData["Title"] = "Cart";
     Cart cart = (Cart)ViewData["Cart"];
+    string sId = (string)ViewData["sessionId"];
+    string GsId = (string)ViewData["GsessionId"];
 }
 @section Scripts
     {
@@ -165,14 +167,12 @@
                             @:Guest
                             ViewData["link"] = "/Home/Login";
                             ViewData["linkName"] = "Login";
-                            ViewData["COlink"] = "/Home/Login";
                         }
                         else
                         {
                             @ViewData["Username"]
                             ViewData["link"] = "/Home/Logout";
                             ViewData["linkName"] = "Logout";
-                            ViewData["COlink"] = "/Home/Purchases";
                         }
                     </a>
                 </li>
@@ -243,10 +243,33 @@
             </tr>
             <tr class="cart-bottom">
                 <td colspan="6">
-                    <button type="button" class="cart-bottom-btn" onclick="location.href='/Home/Products'">Continue Shopping</button>
-                    <button type="button" class="cart-bottom-btn" id="checkout" onclick="location.href='@ViewData["COlink"]';">
+
+                    <button class="cart-bottom-btn" onclick="location.href='/Home/Products';" type="button">Continue Shopping</button>
+                    <button type="button" class="cart-bottom-btn" id="checkout" onclick="myFunction('@sId','@GsId')">
                         Check Out
                     </button>
+
+                    <script>
+                        function myFunction(sId,GsId)
+                        {
+                            if (GsId != '')
+                            {
+                                if (confirm("You will be redirected to the login page. Your items will remain after logging in."))
+                                {
+                                    window.location.href = "/Home/Login";
+                                }
+                            }
+                            else
+                            {
+                                if (confirm("Are you sure you want to checkout?"))
+                                {
+                                    window.location.href = "/Home/Purchases";
+                                }
+                            }
+                        }
+                    </script>
+
+
                 </td>
             </tr>
 

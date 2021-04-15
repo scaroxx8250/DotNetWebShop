@@ -24,10 +24,5 @@ namespace ASPDotNetShoppingCart.Models
 
         public virtual Cart Usercart { get; set; }
 
-        public User()
-        {
-            Usercart = new Cart();
-
-        }
     }
 }
