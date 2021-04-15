@@ -1,7 +1,10 @@
 ﻿@{ ViewData["Title"] = "Cart";
     Cart cart = (Cart)ViewData["Cart"];
 }
-
+@section Scripts
+    {
+    <script src="~/js/Cart.js"></script>
+}
 <style type="text/css">
     .cart {
         width: 1000px;
@@ -195,7 +198,7 @@
                 <th class="cart-name">Product Name</th>
                 <th class="cart-des">Product Description</th>
                 <th width="120">Price</th>
-                <th width="100">Quantity</th>
+                <th width="150">Quantity</th>
                 <th width="120">Subtotal</th>
                 <th width="80">Delete</th>
             </tr>
@@ -210,27 +213,26 @@
                         @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
                         @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
                         @:<td><span class="cart-price">@item.Product.Price</span></td>
-                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
+                        @:<td><button class="cart-reduce" id="decrease" onclick="decreaseValue()" value="Decrease Value" >-</button><span style="padding: 5px" class="@item.ProductId">@item.Qty</span><button class="cart-add" id="increase" onclick="increaseValue()" value="Increase Value">+</button> </td>
                         @:<td><span class="cart-subtotal">0</span></td>
                         @:<td><span class="cart-del">Delete</span></td>
                     @:</tr>
                 }
 
+
                 @*@for (int i = 0; i < cart.CartItem.Count(); i++)
-                {
-                    @:<tr class="cart-item">
-                        @:<td><img src=@cart.CartItem.Product.imagePath width="125" height="66" /></td>
-                        @:<td class="cart-txt-left"><span class="cart-name">@cart.Products[i].Products.productName</span></td>
-                        @:<td class="cart-txt-left"><span class="cart-description">@cart.Products[i].Products.description</span></td>
-                        @:<td><span class="cart-price">@cart.Products[i].Products.price</span></td>
-                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@cart.Products[i].Qty</span> <span class="cart-add">+</span> </td>
-                        @:<td><span class="cart-subtotal">0</span></td>
-                        @:<td><span class="cart-del">Delete</span></td>
-                    @:</tr>
-                }*@
+                    {
+                        @:<tr class="cart-item">
+                            @:<td><img src=@cart.CartItem.Product.imagePath width="125" height="66" /></td>
+                            @:<td class="cart-txt-left"><span class="cart-name">@cart.Products[i].Products.productName</span></td>
+                            @:<td class="cart-txt-left"><span class="cart-description">@cart.Products[i].Products.description</span></td>
+                            @:<td><span class="cart-price">@cart.Products[i].Products.price</span></td>
+                            @:<td><span class="cart-reduce">-</span><span class="cart-num">@cart.Products[i].Qty</span> <span class="cart-add">+</span> </td>
+                            @:<td><span class="cart-subtotal">0</span></td>
+                            @:<td><span class="cart-del">Delete</span></td>
+                        @:</tr>
+                    }*@
             }
-
-
 
             <tr class="cart-bottom">
                 <td colspan="6">
