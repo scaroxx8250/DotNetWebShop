@@ -1,9 +1,9 @@
 ﻿window.onload = function () {
     let elemList = document.getElementsByClassName("addItem");
     for (let i = 0; i < elemList.length; i++)
-        elemList[i].addEventListener("click", AddItem);
+        elemList[i].addEventListener("click", GetProduct);
 }
-function AddItem(event) {
+function GetProduct(event) {
     let elem = event.currentTarget;
     let id = elem.getAttribute('data-Id');
     let name = elem.getAttribute('data-name');
@@ -11,33 +11,39 @@ function AddItem(event) {
     let desc = elem.getAttribute('data-desc');
     let image = elem.getAttribute('data-imagePath');
 
-    SendItem(id, name, price, desc, image);
+    AddProduct(id, name, price, desc, image);
 }
-function SendItem(id, name, price, desc, image) {
+function AddProduct(id, name, price, desc, image) {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/Home/AddToCart");
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
-            // check if HTTP operation is okay
+            // check if HTTP operation is ok
             if (this.status !== 200)
                 return;
 
+             //get response data from server
             let data = JSON.parse(this.responseText);
 
-            // if some error on server, don't update client's view
+           //error from server
             if (!data.success)
                 return;
 
+            //success result from server
             if (data.success)
+            {
                 document.getElementById("lblCartCount").innerHTML = data.quantity;
+            }
+            
         }
     };
 
-
+    //convert string into number in order to be able to pass parameter to controller
     id = id * 1;
     price = price * 1;
 
+    //construct JSON object
         data = {
             "Id": id,
             "ProductName": name,

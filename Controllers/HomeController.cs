@@ -80,7 +80,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View("Login");
         }
-
+        [ResponseCache(NoStore = true, Location =ResponseCacheLocation.None)]
         public IActionResult Products(string searchString)
         {
             List<Product> products = db.Products.ToList();
@@ -220,7 +220,12 @@ namespace ASPDotNetShoppingCart.Controllers
             return View();
         }
 
+        public IActionResult Purchases()
+        {
+            Cart cart = new Cart();
 
+            return View();
+        }
 
         public IActionResult AddToCart([FromBody] Product product)
         {
@@ -249,7 +254,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -284,7 +289,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -314,7 +319,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -349,7 +354,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -363,7 +368,23 @@ namespace ASPDotNetShoppingCart.Controllers
             }
         }
 
+        public IActionResult RemoveFromCart([FromBody] CartItem product)
+        {
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
 
+            if (cartItem == null)
+                return Json(new { success = false });
+
+            else
+            {
+                db.CartItems.Remove(cartItem);
+                db.SaveChanges();
+                return Json(new { success = true });
+              
+            }
+
+
+        }
 
         public IActionResult Privacy()
         {

@@ -156,7 +156,6 @@
 
 
 <div class="container">
-
     <div class="row">
         <div class="col">
             <ul class="nav">
@@ -217,15 +216,24 @@
                         @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
                         @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
                         @:<td><span class="cart-price">@item.Product.Price</span></td>
-                        @:<td>
-                            <button class="cart-reduce" data-product="@item.Product.ProductName" onclick="decreaseValue()" value="Decrease Value">-</button>
-                            <span style="padding: 5px" id="@item.Product.ProductName" class="quantity" onchange="updateSubtotal()">@item.Qty</span>
-                            <button class="cart-add" data-product="@item.Product.ProductName" onclick="increaseValue()" value="Increase Value">+</button>
-                        @:</td>
-                        @:<td><span class="cart-subtotal" data-subtotal="">$@(item.Product.Price*item.Qty).00</span></td>
-                        @:<td><button type="button" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" class="btn shadow-none cart-del">Delete</button></td>
+                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
+                        @:<td><span class="cart-subtotal">0</span></td>
+                        @:<td><span class="cart-del">Delete</span></td>
                     @:</tr>
                 }
+
+                @*@for (int i = 0; i < cart.CartItem.Count(); i++)
+                {
+                    @:<tr class="cart-item">
+                        @:<td><img src=@cart.CartItem.Product.imagePath width="125" height="66" /></td>
+                        @:<td class="cart-txt-left"><span class="cart-name">@cart.Products[i].Products.productName</span></td>
+                        @:<td class="cart-txt-left"><span class="cart-description">@cart.Products[i].Products.description</span></td>
+                        @:<td><span class="cart-price">@cart.Products[i].Products.price</span></td>
+                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@cart.Products[i].Qty</span> <span class="cart-add">+</span> </td>
+                        @:<td><span class="cart-subtotal">0</span></td>
+                        @:<td><span class="cart-del">Delete</span></td>
+                    @:</tr>
+                }*@
             }
 
 
@@ -257,4 +265,5 @@
 
         </table>
     </div>
+</div>
 
