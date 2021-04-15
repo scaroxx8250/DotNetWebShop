@@ -20,7 +20,7 @@ namespace ASPDotNetShoppingCart.Models
         [MaxLength(36)]
         public string SessionId { get; set; }
 
-        public virtual PurchasedHistory PurchasedHistory { get; set; }
+        public virtual ICollection<PurchasedHistory> PurchasedHistory { get; set; }
 
         public virtual Cart Usercart { get; set; }
 

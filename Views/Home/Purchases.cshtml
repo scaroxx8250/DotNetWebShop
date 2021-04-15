@@ -1,10 +1,20 @@
 ﻿@{ ViewData["Title"] = "Gallery Page";
 
-    string[] images = (string[])ViewData["images"];
-    string[] Names = (string[])ViewData["Names"];
-    string[] Descriptions = (string[])ViewData["Description"];
-    string[] Quantity = (string[])ViewData["Quantity"];
-    string[] ActivationCode = (string[])ViewData["AcCode"];
+    // feed userid so that we can use userid to retrieve all relevant purchasedhistoryids
+    // then based on each purchasedhistoryid, iterate through icollection<purchaseditems>
+    // outer loop to display based on productId
+    // inner loop for each productId to iterate through activationcode as dropdown.
+    List<Product> products = (List<Product>)ViewData["products"];
+    List<PurchasedItems> AllItems = (List<PurchasedItems>)ViewData["PurchasedItems"];
+    List<int> productIds = new List<int>();
+    foreach (PurchasedItems item in AllItems.OrderBy(x => x.ProductId))
+    {
+        if (!productIds.Contains(item.ProductId))
+        {
+            productIds.Add(item.ProductId);
+        }
+    }
+
 }
 
 <style type="text/css">
@@ -70,22 +80,22 @@
 
         <div class="cart-title">My Purchase</div>
         <table class="cart-table">
-            @for (int i = 0; i < images.Length; i++)
+            @for (int i = 0; i < productIds.Count(); i++)
             {
                 @:<tr>
                     <td>
 
                         <div class="card" style="width: 18rem;">
 
-                            <img class="card-img-top" src="@images[i]" alt="Card image cap">
+                            <img class="card-img-top" src="@products[productIds[i]-1].ImagePath" alt="Card image cap">
 
                             <div class="card-body">
 
-                                <h5 class="card-title">@Names[i]</h5>
+                                <h5 class="card-title">@products[productIds[i]-1].ProductName</h5>
 
-                                <p class="card-text">@Descriptions[i]</p>
+                                <p class="card-text">@products[productIds[i]-1].Description</p>
 
-                                <a href="#" class="btn btn-primary">Download</a>
+                                <a href="@products[productIds[i]-1].DownloadLink" class="btn btn-primary">Download</a>
 
                             </div>
 
@@ -94,14 +104,14 @@
                     </td>
 
                     <td class=" trade-detail">
-                        Purchased On: 10/4/2020 <br> Quantity: @Quantity[i]
+                        Purchased On: 10/4/2020 <br> Quantity: @AllItems.Count(x => x.ProductId == productIds[i])
                         <br><div class="dropdown">
                             Activation Code:
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    @for (int j = 0; j < ActivationCode.Length; j++)
+                                    @foreach (PurchasedItems item in  AllItems.Where(x => x.ProductId == productIds[i]))
                                     {
-                                        <a class="dropdown-item" href="#">@ActivationCode[j]</a>
+                                        <a class="dropdown-item" href="#">@item.ActivationCode</a>
                                     }
 
                                 </div>
