@@ -1,35 +1,24 @@
 ﻿window.onload = function () {
-    let decreaseButtons = document.getElementsByClassName("cart-reduce");
-    for (let i = 0; i < decreaseButtons.length; i++)
-        decreaseButtons[i].addEventListener("click", DecreaseQty);
-
-    let increaseButtons = document.getElementsByClassName("cart-add");
-    for (let j = 0; j < increaseButtons.length; j++)
-        increaseButtons[j].addEventListener("click", IncreaseQty);
-
-}
-
-function DecreaseQty(event) {
-    let elem = event.currentTarget;
-    let id = elem.getAttribute('data-Id');
-    let qty = elem.getAttribute('data-Qty');
-
-    qty = qty * 1;
-
-    if (qty > 1) {
-        qty = qty - 1;
-        document.getElementById(id).innerHTML = qty;
+    let decreaseQty = document.getElementsByClassName("cart-reduce");
+    for (let i = 0; i < decreaseQty.length; i++) {
+        decreaseQty[i].addEventListener("click", decreaseValue);
     }
-    else {
-        document.getElementById(id).innerHTML = qty;
+    let increaseQty = document.getElementsByClassName("cart-add");
+    for (let i = 0; i < increaseQty.length; i++) {
+        increaseQty[i].addEventListener("click", increaseValue);
     }
 }
-
-function IncreaseQty(event) {
+function increaseValue() {
     let elem = event.currentTarget;
-    let id = elem.getAttribute('data-Id');
-    let qty = elem.getAttribute('data-Qty');
-    qty = qty * 1;
-    qty = qty + 1;
-    document.getElementById(id).innerHTML = qty;
+    var value = parseInt(document.getElementById('number').innerHTML);
+    value = isNaN(value) ? 0 : value;
+    value++;
+    document.getElementById('number').innerHTML = value;
+}
+
+function decreaseValue() {
+    var value = parseInt(document.getElementById('number').innerHTML);
+    value = isNaN(value) ? 0 : value;
+    value < 2 ? value = 1 : value--;
+    document.getElementById('number').innerHTML = value;
 }
