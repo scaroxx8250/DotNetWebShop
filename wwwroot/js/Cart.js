@@ -21,9 +21,16 @@ function IncreaseValue(event) {
     value = isNaN(value) ? 0 : value;
     value++;
     document.getElementById(name).innerHTML = value;
+
+    let unitPrice = elem.getAttribute("data-price");
+    let getTotal= elem.getAttribute("data-desc");
+    let subtotal = unitPrice * value;
+    document.getElementById(getTotal).innerHTML = "$"+subtotal + ".00";
+
+    
+
     UpdateQuantity(name, productId, cartId, value);
 }
-
 function DecreaseValue(event) {
     let elem = event.currentTarget;
     let name = elem.getAttribute("data-product");
@@ -33,6 +40,12 @@ function DecreaseValue(event) {
     value = isNaN(value) ? 0 : value;
     value < 2 ? value = 1 : value--;
     document.getElementById(name).innerHTML = value;
+
+    let unitPrice = elem.getAttribute("data-price");
+    let getTotal = elem.getAttribute("data-desc");
+    let subtotal = unitPrice * value;
+    document.getElementById(getTotal).innerHTML = "$" + subtotal + ".00";
+
     UpdateQuantity(name, productId, cartId, value);
 }
 function UpdateQuantity(name, productId, cartId, value) {
