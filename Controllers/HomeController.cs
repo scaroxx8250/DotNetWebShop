@@ -1,8 +1,10 @@
 ﻿using ASPDotNetShoppingCart.Data;
 using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,15 +57,55 @@ namespace ASPDotNetShoppingCart.Controllers
             }
             else
             {
-                //store sessionID to database user table
-                // check for gsessionid, instantiate guest.cart as cart object to assign to signed in user
-                // db.guest.remove(cart)
-                // db.users.add(cart)
-                user.SessionId = Guid.NewGuid().ToString();
-                db.SaveChanges();
-                Response.Cookies.Append("sessionId", user.SessionId);
-                db.SaveChanges();
-                return RedirectToAction("Products");
+                // check for gsessionid
+                // if gsessionid exists, (this means user has gone through products page as guest and tried to check out cart thus redirecting to here.)
+                string GSessionId = Request.Cookies["GsessionId"];
+                if (GSessionId != null)
+                {
+                    // instantiate guest.cart as cart object to assign to signed in user
+                    Cart Gcart = db.Carts.FirstOrDefault(x => x.GuestId == GSessionId);
+                    Cart Ucart = db.Carts.FirstOrDefault(x => x.UserId == user.Id);
+
+                    // check for the case where user previously checked out a cart (thereby clearing it from DB) 
+                    // and is now checking out as guest
+                    if (Ucart != null)
+                    { 
+                        db.Carts.Remove(Ucart);
+                        db.SaveChanges();
+                    }
+
+                    Gcart.UserId = user.Id;
+                    Gcart.GuestId = null;
+                    user.SessionId = Guid.NewGuid().ToString();
+                    Guest guest = db.Guests.FirstOrDefault(x => x.GsessionId == GSessionId);
+                    db.Guests.Remove(guest);
+                    db.SaveChanges();
+                    Response.Cookies.Append("sessionId", user.SessionId);
+                    Response.Cookies.Delete("GsessionId");
+                    return RedirectToAction("Purchases");
+
+                    // as a logged in user, I have 4 items in cart. this means in carts table, cartId 1 is mine.
+                    // I log out and browse as guest. this means in carts, cartId 2 is mine under gsessionid.
+                    // when I log in to check out cartId 2, do I create cartId 3 or delete cartId 2 and replace under my userId?
+                    // (either way here, we are violating the userId only 1 rule)
+                    // if we choose to violate it, we now have 2 usercarts that can be retrieved by reference of the same userId.
+                    // alternative is to: add existing items in guest cart to existing user cart,
+                    // or deleted existing user cart and make new user cart using guest items.
+                    
+                    // Design choice selected: override old user cart with items in guest cart
+                    // (thereby following unique userId rule.)
+
+                }
+                else
+                {
+                    // else follow below (user just logged in directly with no guest cart)
+                    user.SessionId = Guid.NewGuid().ToString();
+                    db.SaveChanges();
+                    Response.Cookies.Append("sessionId", user.SessionId);
+                    db.SaveChanges();
+                    return RedirectToAction("Products");
+                }
+                
 
             }
         }
@@ -75,6 +117,9 @@ namespace ASPDotNetShoppingCart.Controllers
             if (user != null)
             {
                 user.SessionId = null;
+
+                // apply changes to DB
+                db.SaveChanges();
             }
 
             Response.Cookies.Delete("sessionId");
@@ -195,14 +240,18 @@ namespace ASPDotNetShoppingCart.Controllers
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
+            ViewData["sessionId"] = Request.Cookies["sessionId"];
+            ViewData["GsessionId"] = null;
             string GsessionId = Request.Cookies["GsessionId"];            
             if (GsessionId != null && users.SessionId == null) //Session ID provided, but user could not be found i.e. guest
             {
                 Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == GsessionId);
                 cart = db.Carts.FirstOrDefault(x => x.GuestId == guests.GsessionId);
+                ViewData["GsessionId"] = GsessionId;
+                ViewData["sessionId"] = null;
             }
 
-            ViewData["sessionId"] = Request.Cookies["sessionId"];
+
             ViewData["Cart"] = cart;
 
 
@@ -355,49 +404,60 @@ namespace ASPDotNetShoppingCart.Controllers
             // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
 
+            // for guest users who directly use url to access purchases, redirect to login page.
+            if (Request.Cookies["sessionId"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            // sessionid is not null, so we check to see if it is a valid sessionid tagged to existing user (i.e. bogus or not?)
             User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
-            if (User != null)
+
+            // bogus!
+            if (users == null)
+            {
+                return RedirectToAction("Login");
+            }
+            
+            // valid!
+            else
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
                 ViewData["UserId"] = users.Id;
             }
-
-            // for guest users who directly use url to access purchases, redirect to login page.
             
+
+            // check for empty cart. if empty, skip writing new shit.
+            // else create new rows in purchase tables.
             // create new row in purchasedhistory in DB
-            DateTime localDT = DateTime.Now;
-            PurchasedHistory newHistory = new PurchasedHistory
+            if (cart.CartItem.Count() > 0)
             {
-                DateTime = localDT.Ticks,
-                UserId = Convert.ToInt32(cart.UserId)
-            };
-            db.Add(newHistory);
-            db.SaveChanges();
+                PurchasedHistory newHistory = new PurchasedHistory
+                {
+                    DateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    UserId = Convert.ToInt32(cart.UserId)
+                };
+                db.Add(newHistory);
+                db.SaveChanges();
 
-            // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
-            int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
-            foreach (CartItem x in cart.CartItem)
-            {
-                GenerateCode(x.ProductId, x.Qty, HistoryId);
+                // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
+                int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
+                foreach (CartItem x in cart.CartItem)
+                {
+                    GenerateCode(x.ProductId, x.Qty, HistoryId);
+                }
+
+                // clear user cart on checkout.
+                db.Carts.Remove(cart);
+                db.SaveChanges();
             }
 
-            // clear user cart on checkout.
-            db.Carts.Remove(cart);
-            db.SaveChanges();
-
-            // extract and save purchased items into viewdata for view retrieval
+            // extract and save purchased history into viewdata for view retrieval
             List<PurchasedHistory> Histories = db.PurchasedHistories.Where(history => history.UserId == users.Id).ToList<PurchasedHistory>();
-            List<int> HistoryIds = new List<int>();
-            foreach ( PurchasedHistory history in Histories)
-            {
-                HistoryIds.Add(history.Id);
-            }
-            List<PurchasedItems> AllItems = db.PurchasedItems.Where(item => HistoryIds.Contains(item.PurchasedHistoryId)).ToList<PurchasedItems>();
-            ViewData["PurchasedItems"] = AllItems;
-
-            List<Product> products = db.Products.ToList();
-            ViewData["products"] = products;
+            ViewData["Histories"] = Histories;
+            List<Product> products = db.Products.OrderBy(x => x.Id).ToList();
+            ViewData["Products"] = products;
             return View();
         }
 
