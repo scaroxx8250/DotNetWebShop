@@ -6,6 +6,7 @@
     // first inner loop to display each productId
     // inner loop for each productId to iterate through activationcode as dropdown.
     List<PurchasedHistory> histories = (List<PurchasedHistory>)ViewData["Histories"];
+    List<Product> products = (List<Product>)ViewData["Products"];
   
 }
 
@@ -96,16 +97,15 @@
                         <td>
 
                             <div class="card" style="width: 18rem;">
-
-                                <img class="card-img-top" src="@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.ImagePath" alt="Card image cap">
+                                <img class="card-img-top" src="@products[id-1].ImagePath" alt="Card image cap">
 
                                 <div class="card-body">
 
-                                    <h5 class="card-title">@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.ProductName</h5>
+                                    <h5 class="card-title">@products[id - 1].ProductName</h5>
 
-                                    <p class="card-text">@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.Description</p>
+                                    <p class="card-text">@products[id - 1].Description</p>
 
-                                    <a href="@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.DownloadLink" class="btn btn-primary">Download</a>
+                                    <a href="@products[id-1].DownloadLink" class="btn btn-primary">Download</a>
 
                                 </div>
 

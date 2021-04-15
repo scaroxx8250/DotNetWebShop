@@ -2,6 +2,7 @@
 using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -388,6 +389,10 @@ namespace ASPDotNetShoppingCart.Controllers
             // extract and save purchased history into viewdata for view retrieval
             List<PurchasedHistory> Histories = db.PurchasedHistories.Where(history => history.UserId == users.Id).ToList<PurchasedHistory>();
             ViewData["Histories"] = Histories;
+
+            List<Product> products = db.Products.OrderBy(x => x.Id).ToList();
+            ViewData["Products"] = products;
+
             return View();
         }
 
