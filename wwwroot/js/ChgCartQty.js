@@ -31,7 +31,8 @@ function decreaseValue(event) {
 }
 
 function updateSubtotal(event) {
-    
-    
+    let elem = event.currentTarget;
+    let name = elem.getAttribute("data-subtotal");
+
 }
 

@@ -218,7 +218,7 @@
                                 <span style="padding: 5px" id="@item.Product.ProductName" class="quantity" onchange="updateSubtotal()">@item.Qty</span>
                                 <button class="cart-add" data-product="@item.Product.ProductName" onclick="increaseValue()" value="Increase Value">+</button> 
                         @:</td>
-                        @:<td><span class="cart-subtotal" data-product="@item.Product.ProductName">$@(item.Product.Price*item.Qty).00</span></td>
+                        @:<td><span class="cart-subtotal" data-subtotal="">$@(item.Product.Price*item.Qty).00</span></td>
                         @:<td><span class="cart-del">Delete</span></td>
                     @:</tr>
                 }
