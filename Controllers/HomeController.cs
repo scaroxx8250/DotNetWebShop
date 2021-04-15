@@ -70,8 +70,11 @@ namespace ASPDotNetShoppingCart.Controllers
                     Gcart.UserId = user.Id;
                     Gcart.GuestId = null;
                     user.SessionId = Guid.NewGuid().ToString();
+                    Guest guest = db.Guests.FirstOrDefault(x => x.GsessionId == GSessionId);
+                    db.Guests.Remove(guest);
                     db.SaveChanges();
                     Response.Cookies.Append("sessionId", user.SessionId);
+                    Response.Cookies.Delete("GsessionId");
                     return RedirectToAction("Purchases");
 
                     // as a logged in user, I have 4 items in cart. this means in carts table, cartId 1 is mine.
@@ -107,6 +110,9 @@ namespace ASPDotNetShoppingCart.Controllers
             if (user != null)
             {
                 user.SessionId = null;
+
+                // apply changes to DB
+                db.SaveChanges();
             }
 
             Response.Cookies.Delete("sessionId");
@@ -387,15 +393,30 @@ namespace ASPDotNetShoppingCart.Controllers
             // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
 
+            // for guest users who directly use url to access purchases, redirect to login page.
+            if (Request.Cookies["sessionId"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            // sessionid is not null, so we check to see if it is a valid sessionid tagged to existing user (i.e. bogus or not?)
             User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
-            if (User != null)
+
+            // bogus!
+            if (users == null)
+            {
+                return RedirectToAction("Login");
+            }
+            
+            // valid!
+            else
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
                 ViewData["UserId"] = users.Id;
             }
+            
 
-            // for guest users who directly use url to access purchases, redirect to login page.
             // check for empty cart. if empty, skip writing new shit.
             // else create new rows in purchase tables.
             // create new row in purchasedhistory in DB
