@@ -1,17 +1,18 @@
 ﻿window.onload = function () {
     let decreaseQty = document.getElementsByClassName("cart-reduce");
     for (let i = 0; i < decreaseQty.length; i++) {
-        decreaseQty[i].addEventListener("click", decreaseValue);
+        decreaseQty[i].addEventListener("click", DecreaseValue);
     }
     let increaseQty = document.getElementsByClassName("cart-add");
     for (let i = 0; i < increaseQty.length; i++) {
-        increaseQty[i].addEventListener("click", increaseValue);
+        increaseQty[i].addEventListener("click", IncreaseValue);
     }
     let elemList = document.getElementsByClassName("cart-del");
-    for (let i = 0; i < elemList.length; i++)
+    for (let i = 0; i < elemList.length; i++) {
         elemList[i].addEventListener("click", SelectProduct);
+    }
 }
-function increaseValue(event) {
+function IncreaseValue(event) {
     let elem = event.currentTarget;
     let name = elem.getAttribute("data-product");
     var value = parseInt(document.getElementById(name).innerHTML);
@@ -20,7 +21,7 @@ function increaseValue(event) {
     document.getElementById(name).innerHTML = value;
 }
 
-function decreaseValue(event) {
+function DecreaseValue(event) {
     let elem = event.currentTarget;
     let name = elem.getAttribute("data-product");
     var value = parseInt(document.getElementById(name).innerHTML);
