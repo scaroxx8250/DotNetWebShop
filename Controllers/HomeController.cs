@@ -65,8 +65,15 @@ namespace ASPDotNetShoppingCart.Controllers
                     // instantiate guest.cart as cart object to assign to signed in user
                     Cart Gcart = db.Carts.FirstOrDefault(x => x.GuestId == GSessionId);
                     Cart Ucart = db.Carts.FirstOrDefault(x => x.UserId == user.Id);
-                    db.Carts.Remove(Ucart);
-                    db.SaveChanges();
+
+                    // check for the case where user previously checked out a cart (thereby clearing it from DB) 
+                    // and is now checking out as guest
+                    if (Ucart != null)
+                    { 
+                        db.Carts.Remove(Ucart);
+                        db.SaveChanges();
+                    }
+
                     Gcart.UserId = user.Id;
                     Gcart.GuestId = null;
                     user.SessionId = Guid.NewGuid().ToString();
@@ -233,14 +240,18 @@ namespace ASPDotNetShoppingCart.Controllers
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
+            ViewData["sessionId"] = Request.Cookies["sessionId"];
+            ViewData["GsessionId"] = null;
             string GsessionId = Request.Cookies["GsessionId"];            
             if (GsessionId != null && users.SessionId == null) //Session ID provided, but user could not be found i.e. guest
             {
                 Guest guests = db.Guests.FirstOrDefault(x => x.GsessionId == GsessionId);
                 cart = db.Carts.FirstOrDefault(x => x.GuestId == guests.GsessionId);
+                ViewData["GsessionId"] = GsessionId;
+                ViewData["sessionId"] = null;
             }
 
-            ViewData["sessionId"] = Request.Cookies["sessionId"];
+
             ViewData["Cart"] = cart;
 
 
