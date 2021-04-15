@@ -80,7 +80,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View("Login");
         }
-
+        [ResponseCache(NoStore = true, Location =ResponseCacheLocation.None)]
         public IActionResult Products(string searchString)
         {
             List<Product> products = db.Products.ToList();
