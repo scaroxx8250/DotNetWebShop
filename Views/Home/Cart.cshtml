@@ -189,7 +189,6 @@
             </ul>
         </div>
     </div>
-</div>
     <br />
 
     <div class="cart">
@@ -207,34 +206,19 @@
             </tr>
 
             @if (cart != null)
-            {
-                @*CartItem is ICollection*@
-                @foreach (CartItem item in cart.CartItem)
-                {
-                    @:<tr class="cart-item" id="@item.ProductId">
-                        @:<td><img src=@item.Product.ImagePath width="125" height="66" /></td>
-                        @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
-                        @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
-                        @:<td><span class="cart-price">@item.Product.Price</span></td>
-                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
-                        @:<td><span class="cart-subtotal">0</span></td>
-                        @:<td><span class="cart-del">Delete</span></td>
-                    @:</tr>
-                }
-
-                @*@for (int i = 0; i < cart.CartItem.Count(); i++)
-                {
-                    @:<tr class="cart-item">
-                        @:<td><img src=@cart.CartItem.Product.imagePath width="125" height="66" /></td>
-                        @:<td class="cart-txt-left"><span class="cart-name">@cart.Products[i].Products.productName</span></td>
-                        @:<td class="cart-txt-left"><span class="cart-description">@cart.Products[i].Products.description</span></td>
-                        @:<td><span class="cart-price">@cart.Products[i].Products.price</span></td>
-                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@cart.Products[i].Qty</span> <span class="cart-add">+</span> </td>
-                        @:<td><span class="cart-subtotal">0</span></td>
-                        @:<td><span class="cart-del">Delete</span></td>
-                    @:</tr>
-                }*@
-            }
+            {@*CartItem is ICollection*@
+                            @foreach (CartItem item in cart.CartItem)
+                            {
+            @:<tr class="cart-item" id="@item.ProductId">
+                @:<td><img src=@item.Product.ImagePath width="125" height="66" /></td>
+                @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
+                @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
+                @:<td><span class="cart-price">@item.Product.Price</span></td>
+                @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
+                @:<td><span class="cart-subtotal">0</span></td>
+                @:<td><button type="button" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" class="btn shadow-none cart-del">Delete</button></td>
+            @:</tr>
+        
 
 
 
