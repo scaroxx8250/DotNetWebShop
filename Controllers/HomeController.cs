@@ -366,10 +366,9 @@ namespace ASPDotNetShoppingCart.Controllers
             // for guest users who directly use url to access purchases, redirect to login page.
             
             // create new row in purchasedhistory in DB
-            DateTime localDT = DateTime.Now;
             PurchasedHistory newHistory = new PurchasedHistory
             {
-                DateTime = localDT.Ticks,
+                DateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                 UserId = Convert.ToInt32(cart.UserId)
             };
             db.Add(newHistory);
@@ -386,18 +385,9 @@ namespace ASPDotNetShoppingCart.Controllers
             db.Carts.Remove(cart);
             db.SaveChanges();
 
-            // extract and save purchased items into viewdata for view retrieval
+            // extract and save purchased history into viewdata for view retrieval
             List<PurchasedHistory> Histories = db.PurchasedHistories.Where(history => history.UserId == users.Id).ToList<PurchasedHistory>();
-            List<int> HistoryIds = new List<int>();
-            foreach ( PurchasedHistory history in Histories)
-            {
-                HistoryIds.Add(history.Id);
-            }
-            List<PurchasedItems> AllItems = db.PurchasedItems.Where(item => HistoryIds.Contains(item.PurchasedHistoryId)).ToList<PurchasedItems>();
-            ViewData["PurchasedItems"] = AllItems;
-
-            List<Product> products = db.Products.ToList();
-            ViewData["products"] = products;
+            ViewData["Histories"] = Histories;
             return View();
         }
 

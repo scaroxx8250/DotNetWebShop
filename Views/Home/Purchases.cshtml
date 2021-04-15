@@ -2,19 +2,11 @@
 
     // feed userid so that we can use userid to retrieve all relevant purchasedhistoryids
     // then based on each purchasedhistoryid, iterate through icollection<purchaseditems>
-    // outer loop to display based on productId
+    // outer loop to display based on datetime
+    // first inner loop to display each productId
     // inner loop for each productId to iterate through activationcode as dropdown.
-    List<Product> products = (List<Product>)ViewData["products"];
-    List<PurchasedItems> AllItems = (List<PurchasedItems>)ViewData["PurchasedItems"];
-    List<int> productIds = new List<int>();
-    foreach (PurchasedItems item in AllItems.OrderBy(x => x.ProductId))
-    {
-        if (!productIds.Contains(item.ProductId))
-        {
-            productIds.Add(item.ProductId);
-        }
-    }
-
+    List<PurchasedHistory> histories = (List<PurchasedHistory>)ViewData["Histories"];
+  
 }
 
 <style type="text/css">
@@ -80,48 +72,68 @@
 
         <div class="cart-title">My Purchase</div>
         <table class="cart-table">
-            @for (int i = 0; i < productIds.Count(); i++)
+            
+            @foreach (PurchasedHistory history in histories.OrderBy(x => x.Id))
             {
-                @:<tr>
-                    <td>
+                DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                DateTime date = start.AddSeconds(history.DateTime).ToLocalTime();
 
-                        <div class="card" style="width: 18rem;">
+                List<int> productIds = new List<int>();
 
-                            <img class="card-img-top" src="@products[productIds[i]-1].ImagePath" alt="Card image cap">
+                foreach (PurchasedItems item in history.PurchasedItems.OrderBy(x => x.ProductId))
+                {
+                    if (!productIds.Contains(item.ProductId))
+                    {
+                        productIds.Add(item.ProductId);
+                    }
+                }
+                // iterate by PurchasedItem for that HistoryId in increasing productId number
 
-                            <div class="card-body">
 
-                                <h5 class="card-title">@products[productIds[i]-1].ProductName</h5>
+                foreach (int id in productIds)
+                {
+                    @:<tr>
+                        <td>
 
-                                <p class="card-text">@products[productIds[i]-1].Description</p>
+                            <div class="card" style="width: 18rem;">
 
-                                <a href="@products[productIds[i]-1].DownloadLink" class="btn btn-primary">Download</a>
+                                <img class="card-img-top" src="@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.ImagePath" alt="Card image cap">
+
+                                <div class="card-body">
+
+                                    <h5 class="card-title">@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.ProductName</h5>
+
+                                    <p class="card-text">@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.Description</p>
+
+                                    <a href="@history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).Product.DownloadLink" class="btn btn-primary">Download</a>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                        </td>
 
-                    </td>
+                        <td class=" trade-detail">
+                            Purchased On: @date.ToString("MMM dd yyyy hh:mm tt"). <br> Quantity: @history.PurchasedItems.Where(x => x.ProductId == id).Count()
+                            <br>
+                            @if (history.PurchasedItems.Where(x => x.ProductId == id).Count() > 1)
+                            {
+                                <label for="activation">Activation Codes: </label>
+                                <select name="activation" id="activation">
 
-                    <td class=" trade-detail">
-                        Purchased On: 10/4/2020 <br> Quantity: @AllItems.Count(x => x.ProductId == productIds[i])
-                        <br><div class="dropdown">
-                            Activation Code:
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    @foreach (PurchasedItems item in  AllItems.Where(x => x.ProductId == productIds[i]))
+                                    @foreach (PurchasedItems item in history.PurchasedItems.Where(x => x.ProductId == id))
                                     {
-                                        <a class="dropdown-item" href="#">@item.ActivationCode</a>
+                                        <option value="@item.ActivationCode">@item.ActivationCode</option>
                                     }
-
-                                </div>
-                            </button>
-
-                        </div>
-                    </td>
-
-
-                @:</tr>
+                                </select>
+                            }
+                            else
+                            {
+                                <label for="activation">Activation Code: @history.PurchasedItems.FirstOrDefault(x => x.ProductId == id).ActivationCode</label>
+                            }
+                        </td>
+                    @:</tr>
+                }
             }
 
 
