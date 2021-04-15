@@ -11,6 +11,14 @@
     for (let i = 0; i < elemList.length; i++) {
         elemList[i].addEventListener("click", SelectProduct);
     }
+    let total = parseInt(document.getElementById("total").innerHTML.replace(/^\D+/g, ''));//replace all leading non-digits with nothing
+    let getSubtotal = document.getElementsByClassName("cart-subtotal");
+    for (let i = 0; i < getSubtotal.length; i++) {
+        total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+    }
+    document.getElementById("total").innerHTML = "$"+ total+ ".00";
+
+    
 }
 function IncreaseValue(event) {
     let elem = event.currentTarget;
@@ -24,10 +32,20 @@ function IncreaseValue(event) {
 
     let unitPrice = elem.getAttribute("data-price");
     let getTotal= elem.getAttribute("data-desc");
-    let subtotal = unitPrice * value;
+    var subtotal = unitPrice * value;
     document.getElementById(getTotal).innerHTML = "$"+subtotal + ".00";
 
-    
+    let total = 0;
+
+    let subtotalList = document.getElementsByClassName("cart-subtotal");
+
+
+    for (let i = 0; i < subtotalList.length; i++) {
+        total += parseInt(subtotalList[i].innerHTML.replace(/^\D+/g,'')); //replace all leading non-digits with nothing
+    }
+    document.getElementById("total").innerHTML = "$" + total + ".00";
+
+
 
     UpdateQuantity(name, productId, cartId, value);
 }
@@ -43,9 +61,16 @@ function DecreaseValue(event) {
 
     let unitPrice = elem.getAttribute("data-price");
     let getTotal = elem.getAttribute("data-desc");
-    let subtotal = unitPrice * value;
+    var subtotal = unitPrice * value;
     document.getElementById(getTotal).innerHTML = "$" + subtotal + ".00";
 
+    let total = 0;
+    let getSubtotal = document.getElementsByClassName("cart-subtotal");
+    for (let i = 0; i < getSubtotal.length; i++) {
+        total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+    }
+    document.getElementById("total").innerHTML = "$" + total + ".00";
+ 
     UpdateQuantity(name, productId, cartId, value);
 }
 function UpdateQuantity(name, productId, cartId, value) {

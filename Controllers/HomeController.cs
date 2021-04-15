@@ -261,12 +261,7 @@ namespace ASPDotNetShoppingCart.Controllers
             return View();
         }
 
-        public IActionResult Purchases()
-        {
-            Cart cart = new Cart();
 
-            return View();
-        }
 
         public IActionResult AddToCart([FromBody] Product product)
         {
@@ -442,7 +437,7 @@ namespace ASPDotNetShoppingCart.Controllers
             }
 
         }
-         public IActionResult Purchases()
+        public IActionResult Purchases()
          {
             // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
