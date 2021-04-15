@@ -1,8 +1,9 @@
-﻿using ASPDotNetShoppingCart.Data;
+using ASPDotNetShoppingCart.Data;
 using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,15 +25,6 @@ namespace ASPDotNetShoppingCart.Controllers
         {
             this.db = db;
         }
-
-        //List<User> users = new List<User>();
-
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-        //    //this.appData = appData;
-        //    //appData = new AppData();
-        //}
 
         public IActionResult Index()
         {
@@ -126,7 +118,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View("Login");
         }
-
+        [ResponseCache(NoStore = true, Location =ResponseCacheLocation.None)]
         public IActionResult Products(string searchString)
         {
             List<Product> products = db.Products.ToList();
@@ -134,7 +126,7 @@ namespace ASPDotNetShoppingCart.Controllers
             ViewData["products"] = products;
             ViewData["CurrentFilter"] = searchString;
 
-
+            // Search functionality
             if (!String.IsNullOrEmpty(searchString))
             {
                 //create new list for filtered products 
@@ -179,9 +171,11 @@ namespace ASPDotNetShoppingCart.Controllers
                     //if the cart is null, create cart for user
                     if (cart == null)
                     {
-                        cart = new Cart();
-                        cart.UserId = user.Id;
-                        db.Add(cart);
+                        cart = new Cart()
+                        {
+                            UserId = user.Id
+                        };
+                        db.Carts.Add(cart);
                         db.SaveChanges();
                     }
                     ViewData["cart"] = cart;
@@ -207,7 +201,7 @@ namespace ASPDotNetShoppingCart.Controllers
                     {
                         GsessionId = GsessionId
                     };
-                    db.Add(guest);
+                    db.Guests.Add(guest);
                     db.SaveChanges();
                     Response.Cookies.Append("GsessionId", guest.GsessionId);
                 }
@@ -218,10 +212,19 @@ namespace ASPDotNetShoppingCart.Controllers
                 //if the cart is null, create cart for guest
                 if (guestCart == null)
                 {
-                    guestCart = new Cart();
-                    guestCart.GuestId = GsessionId;
-                    db.Add(guestCart);
-                    db.SaveChanges();
+                    guestCart = new Cart()
+                    {
+                        GuestId = GsessionId
+                    };
+                    try
+                    {
+                        db.Carts.Add(guestCart);
+                        db.SaveChanges();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
                 }
                 ViewData["cart"] = guestCart;
                 ViewData["GsessionId"] = GsessionId;
@@ -229,17 +232,17 @@ namespace ASPDotNetShoppingCart.Controllers
             }
             return View();
         }
-
         public IActionResult Cart()
         {
             Cart cart = new Cart();
-            
+            //IEnumerable<Cart> cart = null;
             User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
-            if (User != null)
+            if (users != null)
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
+
             ViewData["sessionId"] = Request.Cookies["sessionId"];
             ViewData["GsessionId"] = null;
             string GsessionId = Request.Cookies["GsessionId"];            
@@ -254,6 +257,13 @@ namespace ASPDotNetShoppingCart.Controllers
 
             ViewData["Cart"] = cart;
 
+
+            return View();
+        }
+
+        public IActionResult Purchases()
+        {
+            Cart cart = new Cart();
 
             return View();
         }
@@ -285,7 +295,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -320,7 +330,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -350,7 +360,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -385,7 +395,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -399,8 +409,41 @@ namespace ASPDotNetShoppingCart.Controllers
             }
         }
 
-        public IActionResult Purchases()
+        public IActionResult UpdateCart([FromBody] CartItem product)
         {
+
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
+
+            if (cartItem == null)
+                return Json(new { success = false });
+
+            else
+            {
+                cartItem.Qty = product.Qty;
+                db.SaveChanges();
+                return Json(new { success = true });
+
+            }
+        }
+
+        public IActionResult RemoveFromCart([FromBody] CartItem product)
+        {
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
+
+            if (cartItem == null)
+                return Json(new { success = false });
+
+            else
+            {
+                db.CartItems.Remove(cartItem);
+                db.SaveChanges();
+                return Json(new { success = true });
+              
+            }
+
+        }
+         public IActionResult Purchases()
+         {
             // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
 

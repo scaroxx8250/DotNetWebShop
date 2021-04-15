@@ -1,0 +1,64 @@
+﻿@{
+    @*ViewData["Title"] = "ViewProduct";*@
+Layout = "~/Views/Shared/_Layout.cshtml";
+var selectedProduct = (Product)ViewData["selectedProduct"];
+var recommendProducts = (List<Product>)ViewData["recommendedProducts"];
+var selectedProductDetails = ViewData["selectedProductDetails"];
+var rating = (int)ViewData["Rating"];
+var imageFileName = selectedProduct.ProductName + selectedProduct.ImagePath;
+string formactionAddToCart = "/Home/Products?cmd=AddToCart&ProductId=" + selectedProduct.Id;
+}
+}
+<form method="post">
+    <div class="ProductMain">
+        <div class="ProductImage">
+            <img width="240" height="300" src="~/Images/@imageFileName" />
+        </div>
+        <div class="ProductDetail">
+            <div class="ProductDetail-col1"><p>Name: </p></div>
+            <div class="ProductDetail-col2"><p>@selectedProduct.ProductName</p></div>
+            <div class="ProductDetail-col1">
+            </div>
+            <div class="ProductDetail-col1">
+                <p>Genre: </p>
+            </div>
+            <div class="ProductDetail-col2">
+                <p>@selectedProduct.Price/p>
+            </div>
+            <div class="ProductDetail-col1">
+                <p>Description: </p>
+            </div>
+            <div class="ProductDetail-col2">
+                <p>@selectedProduct.Description</p>
+            </div>
+            <div class="ProductDetail-col1">
+                <p>Price: </p>
+            </div>
+            <div class="ProductDetail-col2">
+                <p>$@selectedProduct.Price.ToString("0.00")</p>
+            </div>
+            <div class="ProductDetail-col2" align="center">
+                <button class="buttonGallery" style="vertical-align:middle" type="submit"
+                        formaction="@formactionAddToCart">
+                    <span>Add To Cart</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+<hr />
+<div class="ProductMain">
+    <h3>Recommendations</h3>
+    @foreach (var recommendProduct in recommendProducts)
+    {
+        imageFileName = recommendProduct.ProductName + recommendProduct.ImagePath;
+        <div class="ProductImage">
+            <img width="200" height="250" src="~/Images/@imageFileName" />
+            <div class="ProductRecommendationTitle">
+                @*asp-route-selected is add jquery parameter to route action, selected = action method parameter name*@
+                <a asp-area="Customer" asp-controller="Home" asp-action="ViewProduct" asp-route-selected="@recommendProduct.ProductName">@recommendProduct.ProductName</a>
+            </div>
+        </div>
+    }
+</div>
+<hr />

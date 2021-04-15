@@ -1,9 +1,12 @@
-﻿@{ ViewData["Title"] = "Cart";
+@{ ViewData["Title"] = "Cart";
     Cart cart = (Cart)ViewData["Cart"];
     string sId = (string)ViewData["sessionId"];
     string GsId = (string)ViewData["GsessionId"];
 }
-
+@section Scripts
+    {
+    <script src="~/js/Cart.js"></script>
+}
 <style type="text/css">
     .cart {
         width: 1000px;
@@ -16,7 +19,7 @@
         font-size: 14px;
         border-bottom: 1px solid #AED2FF;
         line-height: 30px;
-        height: 30 px;
+        height: 30px;
         font-weight: 700;
         text-indent: 15px;
         color: #333;
@@ -125,7 +128,7 @@
 
     .cart-bottom-span {
         font-size: 14px;
-        padding: 0px 23px;
+        padding: 0px 0px;
         margin: 0 30px;
     }
 
@@ -138,7 +141,7 @@
     .cart-bottom-btn {
         color: #FFF;
         font-size: 14px;
-        font-weight: 600px;
+        font-weight: bold;
         cursor: pointer;
         margin: 0 20px;
         background: #28a745;
@@ -204,43 +207,46 @@
             @if (cart != null)
             {
                 @*CartItem is ICollection*@
-                @foreach (CartItem item in cart.CartItem)
+                foreach (CartItem item in cart.CartItem)
                 {
-                    @:<tr class="cart-item">
+                    @:<tr class="cart-item" id="@item.ProductId">
                         @:<td><img src=@item.Product.ImagePath width="125" height="66" /></td>
                         @:<td class="cart-txt-left"><span class="cart-name">@item.Product.ProductName</span></td>
                         @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
                         @:<td><span class="cart-price">@item.Product.Price</span></td>
-                        @:<td><span class="cart-reduce">-</span><span class="cart-num">@item.Qty</span> <span class="cart-add">+</span> </td>
-                        @:<td><span class="cart-subtotal">0</span></td>
-                        @:<td><span class="cart-del">Delete</span></td>
+                        @:<td>
+                            <button class="cart-reduce" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Decrease Value">-</button>
+                            <span style="padding: 5px" id="@item.Product.ProductName">@item.Qty</span>
+                            <button class="cart-add" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Increase Value">+</button>
+                        @:</td>
+                        @:<td><span class="cart-subtotal">$@(item.Product.Price*item.Qty).00</span></td>
+                        @:<td><button type="button" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" class="btn shadow-none cart-del">Delete</button></td>
                     @:</tr>
                 }
-
-                @*@for (int i = 0; i < cart.CartItem.Count(); i++)
-                    {
-                        @:<tr class="cart-item">
-                            @:<td><img src=@cart.CartItem.Product.imagePath width="125" height="66" /></td>
-                            @:<td class="cart-txt-left"><span class="cart-name">@cart.Products[i].Products.productName</span></td>
-                            @:<td class="cart-txt-left"><span class="cart-description">@cart.Products[i].Products.description</span></td>
-                            @:<td><span class="cart-price">@cart.Products[i].Products.price</span></td>
-                            @:<td><span class="cart-reduce">-</span><span class="cart-num">@cart.Products[i].Qty</span> <span class="cart-add">+</span> </td>
-                            @:<td><span class="cart-subtotal">0</span></td>
-                            @:<td><span class="cart-del">Delete</span></td>
-                        @:</tr>
-                    }*@
             }
 
 
 
-        <tr class="cart-bottom">
-            <td colspan="6">
-                <span class="cart-bottom-span">Total：<span class="cart-total-price">0</span></span>
-            </td>
-            
-        </tr>
+
             <tr class="cart-bottom">
                 <td colspan="6">
+                    <span class="cart-bottom-span">
+                        Total：
+                        <span class="cart-total-price">
+                            @{ double sum = 0; }
+                            @foreach (CartItem item in cart.CartItem)
+                            {
+                                sum += item.Product.Price * item.Qty;
+                            }
+                            $@sum.00
+                        </span>
+                    </span>
+                </td>
+
+            </tr>
+            <tr class="cart-bottom">
+                <td colspan="6">
+
                     <button class="cart-bottom-btn" onclick="location.href='/Home/Products';" type="button">Continue Shopping</button>
                     <button type="button" class="cart-bottom-btn" id="checkout" onclick="myFunction('@sId','@GsId')">
                         Check Out
