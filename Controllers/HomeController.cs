@@ -74,7 +74,7 @@ namespace ASPDotNetShoppingCart.Controllers
                     db.SaveChanges();
                     Response.Cookies.Append("sessionId", user.SessionId);
                     Response.Cookies.Delete("GsessionId");
-                    return RedirectToAction("Purchases");
+                    return RedirectToAction("Cart");
 
                     // as a logged in user, I have 4 items in cart. this means in carts table, cartId 1 is mine.
                     // I log out and browse as guest. this means in carts, cartId 2 is mine under gsessionid.
@@ -257,13 +257,6 @@ namespace ASPDotNetShoppingCart.Controllers
 
             ViewData["Cart"] = cart;
 
-
-            return View();
-        }
-
-        public IActionResult Purchases()
-        {
-            Cart cart = new Cart();
 
             return View();
         }
