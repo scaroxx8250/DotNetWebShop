@@ -256,7 +256,9 @@ namespace ASPDotNetShoppingCart.Controllers
 
 
             ViewData["Cart"] = cart;
-
+            string token = Guid.NewGuid().ToString();
+            ViewData["token"] = token;
+            TempData["token2"] = token;
 
             return View();
         }
@@ -465,7 +467,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             //Check if user is accessing action method from checkout. The query string token will only be there if this is the case
             //If query string "token" is not there, the user is accessing purchases page only to see his recent purchases, without any checkout
-            if (token == "checkout")   
+            if (token == Convert.ToString(TempData["token2"]))   
             {
                 // check for empty cart. if empty, skip writing new
                 // else create new rows in purchase tables.
