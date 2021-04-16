@@ -13,6 +13,7 @@
     for (let i = 0; i < elemList.length; i++) {
         elemList[i].addEventListener("click", SelectProduct);
     }
+
     //replace all leading non-digits with nothing
     let total = parseInt(document.getElementById("total").innerHTML.replace(/^\D+/g, ''));
     let getSubtotal = document.getElementsByClassName("cart-subtotal");
@@ -60,7 +61,7 @@ function IncreaseValue(event) {
     }
     document.getElementById("total").innerHTML = "$" + total + ".00";
 
-    UpdateQuantity(name, productId, cartId, value);
+    UpdateQuantity( productId, cartId, value);
 }
 
 function DecreaseValue(event) {
@@ -86,15 +87,16 @@ function DecreaseValue(event) {
     }
     document.getElementById("total").innerHTML = "$" + total + ".00";
  
-    UpdateQuantity(name, productId, cartId, value);
+    UpdateQuantity( productId, cartId, value);
 }
 
-function UpdateQuantity(name, productId, cartId, value) {
+function UpdateQuantity( productId, cartId, value) {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/Home/UpdateCart");
     xhr.setRequestHeader("Content-Type", "application/json; charaset=utf8");
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
+
             //check if HTTP Operation is ok
             if (this.status !== 200)
                 return;
@@ -113,6 +115,7 @@ function UpdateQuantity(name, productId, cartId, value) {
             }
         }
     };
+
     //convert string into number in order to be able to pass parameter to controller action method
     productId *= 1;
     cartId *= 1;
@@ -138,6 +141,7 @@ function RemoveProduct(productId, cartId) {
     xhr.setRequestHeader("Content-Type", "application/json; charaset=utf8");
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
+
             //check if HTTP Operation is ok
             if (this.status !== 200)
                 return;
@@ -145,13 +149,13 @@ function RemoveProduct(productId, cartId) {
             //get response data from server
             let data = JSON.parse(this.responseText);
 
-
             //error from server
             if (!data.success)
                 return;
 
             //success result from server
             if (data.success) {
+
                 //remove the product shown in the html page
                 document.getElementById(productId).remove();
 
@@ -159,13 +163,16 @@ function RemoveProduct(productId, cartId) {
                 let total = 0;
                 let getSubtotal = document.getElementsByClassName("cart-subtotal");
                 for (let i = 0; i < getSubtotal.length; i++) {
-                    total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+
+                    //replace all leading non-digits with nothing
+                    total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); 
                 }
                 document.getElementById("total").innerHTML = "$" + total + ".00";
                 CheckTotal();
             }
         }
     };
+
     //convert string into number in order to be able to pass parameter to controller action method
     productId *= 1;
     cartId *= 1;
