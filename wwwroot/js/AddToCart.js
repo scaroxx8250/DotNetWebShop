@@ -22,6 +22,7 @@ function AddProduct(id, name, price, desc, image) {
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
+
             // check if HTTP operation is ok
             if (this.status !== 200)
                 return;
