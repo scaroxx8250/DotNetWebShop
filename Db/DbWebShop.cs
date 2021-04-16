@@ -15,13 +15,16 @@ namespace ASPDotNetShoppingCart.Db
         {
 
         }
+
         protected override void OnModelCreating(ModelBuilder model)
         {
-            //set Name column in Product table as unique
+            // set Name column in Product table as unique
             model.Entity<Product>().HasIndex(x => x.ProductName).IsUnique();
 
+            // create composite key in CartItem table
             model.Entity<CartItem>().HasKey(x => new { x.CartId, x.ProductId });
         }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<PurchasedHistory> PurchasedHistories { get; set; }

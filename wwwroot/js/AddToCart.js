@@ -1,8 +1,11 @@
 ﻿window.onload = function () {
     let elemList = document.getElementsByClassName("addItem");
     for (let i = 0; i < elemList.length; i++)
+    {
         elemList[i].addEventListener("click", GetProduct);
+    }
 }
+
 function GetProduct(event) {
     let elem = event.currentTarget;
     let id = elem.getAttribute('data-Id');
@@ -35,11 +38,10 @@ function AddProduct(id, name, price, desc, image) {
             {
                 document.getElementById("lblCartCount").innerHTML = data.quantity;
             }
-            
         }
     };
 
-    //convert string into number in order to be able to pass parameter to controller
+    //convert string into number in order to be able to pass parameter to controller action method
     id = id * 1;
     price = price * 1;
 

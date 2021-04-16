@@ -1,13 +1,7 @@
-﻿@{ ViewData["Title"] = "Gallery Page";
-
-    // feed userid so that we can use userid to retrieve all relevant purchasedhistoryids
-    // then based on each purchasedhistoryid, iterate through icollection<purchaseditems>
-    // outer loop to display based on datetime
-    // first inner loop to display each productId
-    // inner loop for each productId to iterate through activationcode as dropdown.
+﻿@{ 
+    ViewData["Title"] = "Gallery Page";
     List<PurchasedHistory> histories = (List<PurchasedHistory>)ViewData["Histories"];
     List<Product> products = (List<Product>)ViewData["Products"];
-  
 }
 
 <style type="text/css">
@@ -51,7 +45,6 @@
 </style>
 
 <div class="container">
-
     <div class="row">
         <div class="col">
             <ul class="nav">
@@ -70,7 +63,6 @@
     <br />
 
     <div class="MyPurchase">
-
         <div class="cart-title">My Purchase</div>
         <table class="cart-table">
             
@@ -88,32 +80,21 @@
                         productIds.Add(item.ProductId);
                     }
                 }
+
                 // iterate by PurchasedItem for that HistoryId in increasing productId number
-
-
                 foreach (int id in productIds)
                 {
                     @:<tr>
                         <td>
-
                             <div class="card" style="width: 18rem;">
-
                                 <img class="card-img-top" src="@products[id-1].ImagePath" alt="Card image cap">
-
                                 <div class="card-body">
-
                                     <h5 class="card-title">@products[id - 1].ProductName</h5>
-
                                     <p class="card-text">@products[id - 1].Description</p>
-
                                     <a href="@products[id-1].DownloadLink" target="_blank" class="btn btn-primary">Download</a>
-
                                 </div>
-
                             </div>
-
                         </td>
-
                         <td class=" trade-detail">
                             Purchased On: @date.ToString("MMM dd yyyy hh:mm tt"). <br> Quantity: @history.PurchasedItems.Where(x => x.ProductId == id).Count()
                             <br>
@@ -136,9 +117,6 @@
                     @:</tr>
                 }
             }
-
-
-
         </table>
     </div>
 </div>
