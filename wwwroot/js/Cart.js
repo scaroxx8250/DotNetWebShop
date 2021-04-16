@@ -11,6 +11,33 @@
     for (let i = 0; i < elemList.length; i++) {
         elemList[i].addEventListener("click", SelectProduct);
     }
+    let total = parseInt(document.getElementById("total").innerHTML.replace(/^\D+/g, ''));//replace all leading non-digits with nothing
+    let getSubtotal = document.getElementsByClassName("cart-subtotal");
+    for (let i = 0; i < getSubtotal.length; i++) {
+        total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+    }
+    document.getElementById("total").innerHTML = "$"+ total+ ".00";
+    CheckTotal();
+   
+   
+    
+}
+
+function CheckTotal() {
+
+    if (document.getElementById("total").innerHTML === "$0.00") {
+
+        document.getElementById("checkout").disabled = true;
+        document.getElementById("checkout").classList.add("disabledBtn");
+        return false;
+    }
+    else {
+        document.getElementById("checkout").disabled = false;
+        document.getElementById("checkout").classList.remove("disabledBtn");
+        return true;
+    }
+
+
 }
 function IncreaseValue(event) {
     let elem = event.currentTarget;
@@ -21,9 +48,26 @@ function IncreaseValue(event) {
     value = isNaN(value) ? 0 : value;
     value++;
     document.getElementById(name).innerHTML = value;
+
+    let unitPrice = elem.getAttribute("data-price");
+    let getTotal= elem.getAttribute("data-desc");
+    var subtotal = unitPrice * value;
+    document.getElementById(getTotal).innerHTML = "$"+subtotal + ".00";
+
+    let total = 0;
+
+    let subtotalList = document.getElementsByClassName("cart-subtotal");
+
+
+    for (let i = 0; i < subtotalList.length; i++) {
+        total += parseInt(subtotalList[i].innerHTML.replace(/^\D+/g,'')); //replace all leading non-digits with nothing
+    }
+    document.getElementById("total").innerHTML = "$" + total + ".00";
+
+  
+
     UpdateQuantity(name, productId, cartId, value);
 }
-
 function DecreaseValue(event) {
     let elem = event.currentTarget;
     let name = elem.getAttribute("data-product");
@@ -33,6 +77,21 @@ function DecreaseValue(event) {
     value = isNaN(value) ? 0 : value;
     value < 2 ? value = 1 : value--;
     document.getElementById(name).innerHTML = value;
+
+    let unitPrice = elem.getAttribute("data-price");
+    let getTotal = elem.getAttribute("data-desc");
+    var subtotal = unitPrice * value;
+    document.getElementById(getTotal).innerHTML = "$" + subtotal + ".00";
+
+    let total = 0;
+    let getSubtotal = document.getElementsByClassName("cart-subtotal");
+    for (let i = 0; i < getSubtotal.length; i++) {
+        total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+    }
+    document.getElementById("total").innerHTML = "$" + total + ".00";
+
+
+ 
     UpdateQuantity(name, productId, cartId, value);
 }
 function UpdateQuantity(name, productId, cartId, value) {
@@ -100,6 +159,15 @@ function RemoveProduct(productId, cartId) {
             if (data.success) {
                 //remove the product shown in the html page
                 document.getElementById(productId).remove();
+
+                //update the total price after remove product
+                let total = 0;
+                let getSubtotal = document.getElementsByClassName("cart-subtotal");
+                for (let i = 0; i < getSubtotal.length; i++) {
+                    total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+                }
+                document.getElementById("total").innerHTML = "$" + total + ".00";
+                CheckTotal();
             }
 
         }
