@@ -3,8 +3,9 @@
     string sId = (string)ViewData["sessionId"];
     string GsId = (string)ViewData["GsessionId"];
 }
+
 @section Scripts
-    {
+{
     <script src="~/js/Cart.js"></script>
 }
 <style type="text/css">
@@ -35,20 +36,19 @@
         color: #333333;
     }
 
+    .cart-table th {
+        border-bottom: 2px solid #B2D1FF;
+        font-weight: bold;
+        height: 35px;
+        line-height: 1.4375rem;
+        text-align: center;
+    }
 
-        .cart-table th {
-            border-bottom: 2px solid #B2D1FF;
-            font-weight: bold;
-            height: 35px;
-            line-height: 1.4375rem;
-            text-align: center;
-        }
-
-        .cart-table .cart-th-left {
-            text-align: center;
-            padding-left: 17px;
-            font-weight: bold;
-        }
+    .cart-table .cart-th-left {
+        text-align: center;
+        padding-left: 17px;
+        font-weight: bold;
+    }
 
     .cart-item .cart-txt-left {
         text-align: center;
@@ -60,12 +60,10 @@
         border-bottom: 1px dotted #84B3FD;
     }
 
-        .cart-item td {
-            height: 55px;
-            text-align: center;
-        }
-
-
+    .cart-item td {
+        height: 55px;
+        text-align: center;
+    }
 
     .cart-name {
         color: #3366D4;
@@ -91,9 +89,9 @@
         font-size: 0.833331rem;
     }
 
-        .cart-raduce:hover, .cart-add:hover {
-            background-color: #FF9900;
-        }
+    .cart-raduce:hover, .cart-add:hover {
+        background-color: #FF9900;
+    }
 
     .cart-num {
         margin: 5px;
@@ -111,20 +109,20 @@
         color: #3366D4;
     }
 
-        .cart-del:hover, .cart-all:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
+    .cart-del:hover, .cart-all:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
 
     .cart-bottom {
         height: 55px;
         text-align: right;
     }
 
-        .cart-bottom .cart-all {
-            position: relative;
-            top: 1px;
-        }
+    .cart-bottom .cart-all {
+        position: relative;
+        top: 1px;
+    }
 
     .cart-bottom-span {
         font-size: 14px;
@@ -150,9 +148,9 @@
         padding: 6px 12px;
     }
 
-        .cart-bottom-btn:hover {
-            background: #28a745;
-        }
+    .cart-bottom-btn:hover {
+        background: #28a745;
+    }
 </style>
 
 
@@ -230,7 +228,7 @@
                     <span class="cart-bottom-span">
                         Total：
                         <span class="cart-total-price" id="total">
-                           $0.00
+                            $0.00
                         </span>
                     </span>
                 </td>
