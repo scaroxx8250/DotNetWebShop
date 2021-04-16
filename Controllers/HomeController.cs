@@ -256,7 +256,9 @@ namespace ASPDotNetShoppingCart.Controllers
 
 
             ViewData["Cart"] = cart;
-
+            string token = Guid.NewGuid().ToString();
+            ViewData["token"] = token;
+            TempData["token2"] = token;
 
             return View();
         }
