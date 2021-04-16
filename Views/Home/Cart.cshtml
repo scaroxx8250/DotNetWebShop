@@ -247,7 +247,7 @@
                     <script>
                         function myFunction(sId, GsId) {
                             if (GsId != '') {
-                                
+
                                 let result = CheckTotal();
 
                                 if (result === true) {
@@ -255,11 +255,11 @@
                                         window.location.href = "/Home/Login";
                                     }
                                 }
-                               
+
                             }
                             else {
                                 if (confirm("Are you sure you want to checkout?")) {
-                                    window.location.href = "/Home/Purchases?token=checkout";
+                                    window.location.href = "/Home/Purchases?token=@ViewData["token"]";
                                 }
                             }
                         }
