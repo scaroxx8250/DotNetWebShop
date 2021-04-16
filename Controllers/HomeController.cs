@@ -19,6 +19,8 @@ namespace ASPDotNetShoppingCart.Controllers
             this.db = db;
         }
 
+        // suppress browser caching
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult Login()
         {
             string sessionId = Request.Cookies["sessionId"];
