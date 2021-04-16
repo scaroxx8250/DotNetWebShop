@@ -5,6 +5,22 @@
 
 <script src="/js/login.js"></script>
 
+<style type="text/css">
+    .field-icon {
+        float: right;
+        margin-left: -40px;
+        margin-top: -40px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .container {
+        padding-top: 50px;
+        margin: auto;
+    }
+    </style>
+
+
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -36,10 +52,14 @@
             <input type="text" id="Username" name="username" class="form-control" placeholder="Username" value="@ViewData["username"]" required
                    oninvalid="this.setCustomValidity('This field cannot be left blank.')"
                    oninput="this.setCustomValidity('')">
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="Password" name="password" class="form-control" placeholder="Password" required
-                   oninvalid="this.setCustomValidity('This field cannot be left blank.')"
-                   oninput="this.setCustomValidity('')">
+            <div>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="Password" name="password" class="form-control" placeholder="Password" required
+                       oninvalid="this.setCustomValidity('This field cannot be left blank.')"
+                       oninput="this.setCustomValidity('')">
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+
+            </div>
             <button class="btn btn-lg btn-block btn-outline-success" type="submit" id="signin">Sign in</button>
             <p style="color:red" id="err_msg">@ViewData["errmsg"]</p>
         </form>
