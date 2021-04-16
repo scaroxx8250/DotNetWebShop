@@ -2,6 +2,10 @@
 	//let errDiv = document.getElementById("err_msg");
 
 	let form = document.getElementById("form");
+
+	document.getElementById("PasswordToggle").addEventListener("mousedown", peekPwd);
+	document.getElementById("PasswordToggle").addEventListener("mouseup", hidePwd);
+
 	form.onsubmit = function () {
 		let elemUname = document.getElementById("Username");
 		let elemPwd = document.getElementById("Password");
@@ -36,3 +40,15 @@
 	});
 }
 
+function peekPwd(event) {
+	let elem = event.currentTarget;
+	let id = elem.getAttribute("data-id");
+
+	document.getElementById(id).setAttribute("type", "text");
+
+}
+function hidePwd(event) {
+	let elem = event.currentTarget;
+	let id = elem.getAttribute("data-id");
+	document.getElementById(id).setAttribute("type", "password");
+}
