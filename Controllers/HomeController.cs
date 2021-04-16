@@ -435,7 +435,7 @@ namespace ASPDotNetShoppingCart.Controllers
             }
 
         }
-        public IActionResult Purchases()
+        public IActionResult Purchases(string token)
          {
             // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
@@ -462,31 +462,35 @@ namespace ASPDotNetShoppingCart.Controllers
                 ViewData["Username"] = users.Username;
                 ViewData["UserId"] = users.Id;
             }
-            
 
-            // check for empty cart. if empty, skip writing new shit.
-            // else create new rows in purchase tables.
-            // create new row in purchasedhistory in DB
-            if (cart.CartItem.Count() > 0)
+            //Check if user is accessing action method from checkout. The query string token will only be there if this is the case
+            //If query string "token" is not there, the user is accessing purchases page only to see his recent purchases, without any checkout
+            if (token == "checkout")   
             {
-                PurchasedHistory newHistory = new PurchasedHistory
+                // check for empty cart. if empty, skip writing new
+                // else create new rows in purchase tables.
+                // create new row in purchasedhistory in DB
+                if (cart.CartItem.Count() > 0)
                 {
-                    DateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    UserId = Convert.ToInt32(cart.UserId)
-                };
-                db.Add(newHistory);
-                db.SaveChanges();
+                    PurchasedHistory newHistory = new PurchasedHistory
+                    {
+                        DateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                        UserId = Convert.ToInt32(cart.UserId)
+                    };
+                    db.Add(newHistory);
+                    db.SaveChanges();
 
-                // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
-                int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
-                foreach (CartItem x in cart.CartItem)
-                {
-                    GenerateCode(x.ProductId, x.Qty, HistoryId);
+                    // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
+                    int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
+                    foreach (CartItem x in cart.CartItem)
+                    {
+                        GenerateCode(x.ProductId, x.Qty, HistoryId);
+                    }
+
+                    // clear user cart on checkout.
+                    db.Carts.Remove(cart);
+                    db.SaveChanges();
                 }
-
-                // clear user cart on checkout.
-                db.Carts.Remove(cart);
-                db.SaveChanges();
             }
 
             // extract and save purchased history into viewdata for view retrieval
