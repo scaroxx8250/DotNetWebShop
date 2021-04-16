@@ -1,8 +1,9 @@
-﻿using ASPDotNetShoppingCart.Data;
+using ASPDotNetShoppingCart.Data;
 using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,15 +25,6 @@ namespace ASPDotNetShoppingCart.Controllers
         {
             this.db = db;
         }
-
-        //List<User> users = new List<User>();
-
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-        //    //this.appData = appData;
-        //    //appData = new AppData();
-        //}
 
         public IActionResult Index()
         {
@@ -82,7 +74,7 @@ namespace ASPDotNetShoppingCart.Controllers
                     db.SaveChanges();
                     Response.Cookies.Append("sessionId", user.SessionId);
                     Response.Cookies.Delete("GsessionId");
-                    return RedirectToAction("Purchases");
+                    return RedirectToAction("Cart");
 
                     // as a logged in user, I have 4 items in cart. this means in carts table, cartId 1 is mine.
                     // I log out and browse as guest. this means in carts, cartId 2 is mine under gsessionid.
@@ -126,7 +118,7 @@ namespace ASPDotNetShoppingCart.Controllers
 
             return View("Login");
         }
-
+        [ResponseCache(NoStore = true, Location =ResponseCacheLocation.None)]
         public IActionResult Products(string searchString)
         {
             List<Product> products = db.Products.ToList();
@@ -134,7 +126,7 @@ namespace ASPDotNetShoppingCart.Controllers
             ViewData["products"] = products;
             ViewData["CurrentFilter"] = searchString;
 
-
+            // Search functionality
             if (!String.IsNullOrEmpty(searchString))
             {
                 //create new list for filtered products 
@@ -179,9 +171,11 @@ namespace ASPDotNetShoppingCart.Controllers
                     //if the cart is null, create cart for user
                     if (cart == null)
                     {
-                        cart = new Cart();
-                        cart.UserId = user.Id;
-                        db.Add(cart);
+                        cart = new Cart()
+                        {
+                            UserId = user.Id
+                        };
+                        db.Carts.Add(cart);
                         db.SaveChanges();
                     }
                     ViewData["cart"] = cart;
@@ -207,7 +201,7 @@ namespace ASPDotNetShoppingCart.Controllers
                     {
                         GsessionId = GsessionId
                     };
-                    db.Add(guest);
+                    db.Guests.Add(guest);
                     db.SaveChanges();
                     Response.Cookies.Append("GsessionId", guest.GsessionId);
                 }
@@ -218,10 +212,19 @@ namespace ASPDotNetShoppingCart.Controllers
                 //if the cart is null, create cart for guest
                 if (guestCart == null)
                 {
-                    guestCart = new Cart();
-                    guestCart.GuestId = GsessionId;
-                    db.Add(guestCart);
-                    db.SaveChanges();
+                    guestCart = new Cart()
+                    {
+                        GuestId = GsessionId
+                    };
+                    try
+                    {
+                        db.Carts.Add(guestCart);
+                        db.SaveChanges();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
                 }
                 ViewData["cart"] = guestCart;
                 ViewData["GsessionId"] = GsessionId;
@@ -229,17 +232,17 @@ namespace ASPDotNetShoppingCart.Controllers
             }
             return View();
         }
-
         public IActionResult Cart()
         {
             Cart cart = new Cart();
-            
+            //IEnumerable<Cart> cart = null;
             User users = db.Users.FirstOrDefault(x => x.SessionId == Request.Cookies["sessionId"]);
-            if (User != null)
+            if (users != null)
             {
                 cart = db.Carts.FirstOrDefault(x => x.UserId == users.Id);
                 ViewData["Username"] = users.Username;
             }
+
             ViewData["sessionId"] = Request.Cookies["sessionId"];
             ViewData["GsessionId"] = null;
             string GsessionId = Request.Cookies["GsessionId"];            
@@ -285,7 +288,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -320,7 +323,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -350,7 +353,7 @@ namespace ASPDotNetShoppingCart.Controllers
                             ProductId = product.Id,
                             Qty = 1
                         };
-                        db.Add(cartitem);
+                        db.CartItems.Add(cartitem);
                         db.SaveChanges();
                         countItems++;
                     }
@@ -385,7 +388,7 @@ namespace ASPDotNetShoppingCart.Controllers
                                 ProductId = product.Id,
                                 Qty = 1
                             };
-                            db.Add(cartitem);
+                            db.CartItems.Add(cartitem);
                             db.SaveChanges();
                             countItems++;
                         }
@@ -399,8 +402,41 @@ namespace ASPDotNetShoppingCart.Controllers
             }
         }
 
-        public IActionResult Purchases()
+        public IActionResult UpdateCart([FromBody] CartItem product)
         {
+
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
+
+            if (cartItem == null)
+                return Json(new { success = false });
+
+            else
+            {
+                cartItem.Qty = product.Qty;
+                db.SaveChanges();
+                return Json(new { success = true });
+
+            }
+        }
+
+        public IActionResult RemoveFromCart([FromBody] CartItem product)
+        {
+            CartItem cartItem = db.CartItems.FirstOrDefault(x => x.CartId == product.CartId && x.ProductId == product.ProductId);
+
+            if (cartItem == null)
+                return Json(new { success = false });
+
+            else
+            {
+                db.CartItems.Remove(cartItem);
+                db.SaveChanges();
+                return Json(new { success = true });
+              
+            }
+
+        }
+        public IActionResult Purchases(string token)
+         {
             // cart fed in as arg to get productid and qty
             Cart cart = new Cart();
 
@@ -426,31 +462,35 @@ namespace ASPDotNetShoppingCart.Controllers
                 ViewData["Username"] = users.Username;
                 ViewData["UserId"] = users.Id;
             }
-            
 
-            // check for empty cart. if empty, skip writing new shit.
-            // else create new rows in purchase tables.
-            // create new row in purchasedhistory in DB
-            if (cart.CartItem.Count() > 0)
+            //Check if user is accessing action method from checkout. The query string token will only be there if this is the case
+            //If query string "token" is not there, the user is accessing purchases page only to see his recent purchases, without any checkout
+            if (token == "checkout")   
             {
-                PurchasedHistory newHistory = new PurchasedHistory
+                // check for empty cart. if empty, skip writing new
+                // else create new rows in purchase tables.
+                // create new row in purchasedhistory in DB
+                if (cart.CartItem.Count() > 0)
                 {
-                    DateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    UserId = Convert.ToInt32(cart.UserId)
-                };
-                db.Add(newHistory);
-                db.SaveChanges();
+                    PurchasedHistory newHistory = new PurchasedHistory
+                    {
+                        DateTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                        UserId = Convert.ToInt32(cart.UserId)
+                    };
+                    db.Add(newHistory);
+                    db.SaveChanges();
 
-                // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
-                int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
-                foreach (CartItem x in cart.CartItem)
-                {
-                    GenerateCode(x.ProductId, x.Qty, HistoryId);
+                    // based on productid and qty, run generateActCode as required and save to PurchasedItems in DB
+                    int HistoryId = db.PurchasedHistories.OrderBy(x => x.Id).LastOrDefault().Id;
+                    foreach (CartItem x in cart.CartItem)
+                    {
+                        GenerateCode(x.ProductId, x.Qty, HistoryId);
+                    }
+
+                    // clear user cart on checkout.
+                    db.Carts.Remove(cart);
+                    db.SaveChanges();
                 }
-
-                // clear user cart on checkout.
-                db.Carts.Remove(cart);
-                db.SaveChanges();
             }
 
             // extract and save purchased history into viewdata for view retrieval
