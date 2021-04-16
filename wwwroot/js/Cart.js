@@ -17,8 +17,27 @@
         total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
     }
     document.getElementById("total").innerHTML = "$"+ total+ ".00";
-
+    CheckTotal();
+   
+   
     
+}
+
+function CheckTotal() {
+
+    if (document.getElementById("total").innerHTML === "$0.00") {
+
+        document.getElementById("checkout").disabled = true;
+        document.getElementById("checkout").classList.add("disabledBtn");
+        return false;
+    }
+    else {
+        document.getElementById("checkout").disabled = false;
+        document.getElementById("checkout").classList.remove("disabledBtn");
+        return true;
+    }
+
+
 }
 function IncreaseValue(event) {
     let elem = event.currentTarget;
@@ -45,7 +64,7 @@ function IncreaseValue(event) {
     }
     document.getElementById("total").innerHTML = "$" + total + ".00";
 
-
+  
 
     UpdateQuantity(name, productId, cartId, value);
 }
@@ -70,6 +89,8 @@ function DecreaseValue(event) {
         total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
     }
     document.getElementById("total").innerHTML = "$" + total + ".00";
+
+
  
     UpdateQuantity(name, productId, cartId, value);
 }
@@ -138,6 +159,15 @@ function RemoveProduct(productId, cartId) {
             if (data.success) {
                 //remove the product shown in the html page
                 document.getElementById(productId).remove();
+
+                //update the total price after remove product
+                let total = 0;
+                let getSubtotal = document.getElementsByClassName("cart-subtotal");
+                for (let i = 0; i < getSubtotal.length; i++) {
+                    total += parseInt(getSubtotal[i].innerHTML.replace(/^\D+/g, '')); //replace all leading non-digits with nothing
+                }
+                document.getElementById("total").innerHTML = "$" + total + ".00";
+                CheckTotal();
             }
 
         }

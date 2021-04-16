@@ -247,9 +247,15 @@
                     <script>
                         function myFunction(sId, GsId) {
                             if (GsId != '') {
-                                if (confirm("You will be redirected to the login page. Your items will remain after logging in.")) {
-                                    window.location.href = "/Home/Login";
+                                
+                                let result = CheckTotal();
+
+                                if (result === true) {
+                                    if (confirm("You will be redirected to the login page. Your items will remain after logging in.")) {
+                                        window.location.href = "/Home/Login";
+                                    }
                                 }
+                               
                             }
                             else {
                                 if (confirm("Are you sure you want to checkout?")) {
