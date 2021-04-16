@@ -29,11 +29,6 @@ namespace ASPDotNetShoppingCart
             services.AddDbContext<DbWebShop>(opt =>
             opt.UseLazyLoadingProxies().UseSqlServer(
                 Configuration.GetConnectionString("DbConn")));
-
-            // inject our users and photos into DI container
-            //services.AddSingleton(_ => {
-            //    return Helper.InitAppData();
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

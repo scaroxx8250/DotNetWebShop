@@ -19,13 +19,13 @@ namespace ASPDotNetShoppingCart.Controllers
             this.db = db;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public IActionResult Login()
         {
+            string sessionId = Request.Cookies["sessionId"];
+            if(sessionId != null)
+            {
+               return RedirectToAction("Products");
+            }
             return View();
         }
 

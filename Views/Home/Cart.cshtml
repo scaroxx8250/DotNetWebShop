@@ -189,7 +189,6 @@
     <br />
 
     <div class="cart">
-
         <div class="cart-title">View Cart</div>
         <table class="cart-table">
             <tr class="cart-header">
@@ -204,7 +203,6 @@
 
             @if (cart != null)
             {
-                @*CartItem is ICollection*@
                 foreach (CartItem item in cart.CartItem)
                 {
                     @:<tr class="cart-item" id="@item.ProductId">
@@ -213,7 +211,7 @@
                         @:<td class="cart-txt-left"><span class="cart-description">@item.Product.Description</span></td>
                         @:<td><span class="cart-price">@item.Product.Price</span></td>
                         @:<td>
-                            <button class="cart-reduce" data-desc2="@item.Product.Description" data-desc="@item.Product.Description" data-price="@item.Product.Price" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Decrease Value">-</button>
+                            <button class="cart-reduce" data-desc="@item.Product.Description" data-price="@item.Product.Price" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Decrease Value">-</button>
                             <span style="padding: 5px" class="quantity" id="@item.Product.ProductName">@item.Qty</span>
                             <button class="cart-add" data-desc="@item.Product.Description" data-price="@item.Product.Price" data-ProductId="@item.ProductId" data-CartId="@cart.CartId" data-product="@item.Product.ProductName" value="Increase Value">+</button>
                         @:</td>
@@ -232,41 +230,35 @@
                         </span>
                     </span>
                 </td>
-
             </tr>
             <tr class="cart-bottom">
                 <td colspan="6">
-
                     <button class="cart-bottom-btn" onclick="location.href='/Home/Products';" type="button">Continue Shopping</button>
                     <button type="button" class="cart-bottom-btn" id="checkout" onclick="myFunction('@sId','@GsId')">
                         Check Out
                     </button>
-
                     <script>
-                        function myFunction(sId, GsId) {
-                            if (GsId != '') {
-
+                        function myFunction(sId, GsId)
+                        {
+                            if (GsId != '')
+                            {
                                 let result = CheckTotal();
-
                                 if (result === true) {
                                     if (confirm("You will be redirected to the login page. Your items will remain after logging in.")) {
                                         window.location.href = "/Home/Login";
                                     }
                                 }
-
                             }
                             else {
-                                if (confirm("Are you sure you want to checkout?")) {
+                                if (confirm("Are you sure you want to checkout?"))
+                                {
                                     window.location.href = "/Home/Purchases?token=@ViewData["token"]";
                                 }
                             }
                         }
                     </script>
-
-
                 </td>
             </tr>
-
         </table>
     </div>
 </div>
