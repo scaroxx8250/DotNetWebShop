@@ -1,12 +1,7 @@
-﻿using ASPDotNetShoppingCart.Data;
-using ASPDotNetShoppingCart.Db;
+﻿using ASPDotNetShoppingCart.Db;
 using ASPDotNetShoppingCart.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ASPDotNetShoppingCart.Util
 {
@@ -21,15 +16,11 @@ namespace ASPDotNetShoppingCart.Util
         // Called in Startup
         public void Init()
         {
-            // Instantiation
-            //AppData appData = new AppData();
-
             // Fill up data by calling the methods "AddUsers" and "AddProducts"
-          
             AddUsers();
             AddProducts("ProductDetails.data");
-            // AddProducts(appData.Products, "ProductDetails.data");
         }
+
         protected void AddUsers()
         {
             string[] names = { "john", "mary" };
@@ -46,9 +37,6 @@ namespace ASPDotNetShoppingCart.Util
             db.SaveChanges();
         }
      
-
-
-
         protected void AddProducts(string filename)
         {
             string[] lines = File.ReadAllLines("SeedData" + "/" + filename);
@@ -57,7 +45,9 @@ namespace ASPDotNetShoppingCart.Util
             {
                 string[] sixth = line.Split(";");
                 if (sixth.Length != 5)
-                    continue; // not what we expected; skip
+                {
+                    continue;
+                }
 
                db.Products.Add(new Product
                 {
